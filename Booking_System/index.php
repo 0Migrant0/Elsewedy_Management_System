@@ -20,10 +20,12 @@
                 <select class="clinic-select" id="clinic" name="clinic" onchange="fetchAvailableDays()" required>
                     <option value="">اختر العيادة</option>
                     <?php
-                    include 'components/db_connection.php';
+                    require_once '../manegment_system/components/db.php';
+
+
                     $sql = "SELECT id, name FROM clinics";
-                    $result = $conn->query($sql);
-                    while ($row = $result->fetch_assoc()) {
+                    $result = $pdo->query($sql);
+                    while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
                         echo "<option value='{$row['id']}'>{$row['name']}</option>";
                     }
                     ?>
@@ -52,9 +54,9 @@
         <aside class="date-plan">
             <div>
                 <h2>محافظة القاهرة</h2>
-                    <p>
-                        حدائق القبة: مستشفى الفؤاد (السبت) من <span>(5 م&nbsp;) - (7 م&nbsp;)</span>
-                    </p>
+                <p>
+                    حدائق القبة: مستشفى الفؤاد (السبت) من <span>(5 م&nbsp;) - (7 م&nbsp;)</span>
+                </p>
             </div>
             <div>
                 <h2>محافظة الشرقية</h2>

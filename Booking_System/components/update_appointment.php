@@ -1,5 +1,6 @@
 <?php
-include 'db_connection.php';
+require_once '../../manegment_system/components/db.php';
+
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id = $_POST['id'];
@@ -7,17 +8,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // تحديث حالة الحجز
     $sql = "UPDATE appointments SET status = ? WHERE id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("si", $status, $id);
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(1, $status);
+    $stmt->bindValue(2, $id);
 
     if ($stmt->execute()) {
         header("Location: ../dashboard.php"); // إعادة توجيه إلى صفحة التحكم بعد التحديث
         exit();
     } else {
-        echo "حدث خطأ أثناء تحديث الحالة: " . $stmt->error;
+        echo "حدث خطأ أثناء تحديث الحالة: " . $stmt->errorInfo()[2];
     }
 
-    $stmt->close();
+    $stmt = null;
 }
-$conn->close();
+$pdo = null;
 ?>

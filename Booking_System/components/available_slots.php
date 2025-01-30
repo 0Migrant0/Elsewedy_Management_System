@@ -1,5 +1,6 @@
 <?php
-include 'db_connection.php';
+require_once '../../manegment_system/components/db.php';
+
 
 $clinic_id = $_GET['clinic_id'];
 $day_of_week = $_GET['day_of_week'];
@@ -7,24 +8,24 @@ $selected_date = $_GET['selected_date']; // احصل على التاريخ ال�
 
 // استعلام للحصول على الوقت المتاح بناءً على اليوم
 $sql = "SELECT start_time, end_time FROM clinics WHERE id = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $clinic_id);
+$stmt = $pdo->prepare($sql);
+$stmt->bindParam(1, $clinic_id);
 $stmt->execute();
-$result = $stmt->get_result();
-
-if ($row = $result->fetch_assoc()) {
+$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+if ($row = $result[0]) {
     $start_time = $row['start_time'];
     $end_time = $row['end_time'];
 
     // استعلام للحصول على الوقت المحجوز في التاريخ المحدد
     $booked_sql = "SELECT appointment_datetime FROM appointments WHERE clinic_id = ? AND DATE(appointment_datetime) = ?";
-    $booked_stmt = $conn->prepare($booked_sql);
-    $booked_stmt->bind_param("is", $clinic_id, $selected_date); // استخدم التاريخ
+    $booked_stmt = $pdo->prepare($booked_sql);
+    $booked_stmt->bindParam(1, $clinic_id);
+    $booked_stmt->bindParam(2, $selected_date); // استخدم التاريخ
     $booked_stmt->execute();
-    $booked_result = $booked_stmt->get_result();
+    $booked_result = $booked_stmt->fetchAll(PDO::FETCH_ASSOC);
 
     $booked_slots = [];
-    while ($booked_row = $booked_result->fetch_assoc()) {
+    foreach ($booked_result as $booked_row) {
         $booked_slots[] = date('H:i', strtotime($booked_row['appointment_datetime']));
     }
 

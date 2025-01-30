@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+require_once 'db.php';
+
 // تحقق إذا كان المسؤول قد سجل الدخول
 if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
     header('Location: login.php'); // إعادة التوجيه إلى صفحة تسجيل الدخول
@@ -20,10 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $current_date = date('Y-m-d');
     // جلب اسم العيادة بناءً على الـ ID
     try {
-        $db = new PDO('mysql:host=localhost;dbname=booking_system', 'root', '');
-        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-        $stmt = $db->prepare("SELECT name FROM clinics WHERE id = ?");
+        $stmt = $pdo->prepare("SELECT name FROM clinics WHERE id = ?");
         $stmt->execute([$clinic_id]);
         $clinic = $stmt->fetch(PDO::FETCH_ASSOC);
         $clinic_name = $clinic ? $clinic['name'] : 'غير محدد';
@@ -77,11 +76,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // حفظ بيانات المريض في قاعدة البيانات
     try {
-        $db = new PDO('mysql:host=localhost;dbname=booking_system', 'root', '');
-        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
         // إدخال بيانات المريض
-        $stmt = $db->prepare(
+        $stmt = $pdo->prepare(
             "INSERT INTO patients (name, medical_id, phone, status, notes, diagnosis, xray_images, test_files, prescriptions, contract, clinic_id, clinic_name) 
              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
         );
@@ -111,10 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // جلب العيادات للاختيار منها
 try {
-    $db = new PDO('mysql:host=localhost;dbname=booking_system', 'root', '');
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-    $stmt = $db->prepare("SELECT id, name FROM clinics");
+    $stmt = $pdo->prepare("SELECT id, name FROM clinics");
     $stmt->execute();
     $clinics = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -140,8 +133,8 @@ try {
             <div>
                 <a href="../index.php"><i class="fas fa-home"></i> الرئيسية</a>
                 <a href="add_patient.php"><i class="fas fa-user-plus"></i> إضافة مريض</a>
-                <a href="../../Booking_System/dashboard.php"><i class="fas fa-calendar-alt"></i> الحجوزات</a>
-                <a href="../../Booking_System/index.php"><i class="fas fa-calendar-check"></i> حجز موعد</a>
+                <a href="../../booking_system/dashboard.php"><i class="fas fa-calendar-alt"></i> الحجوزات</a>
+                <a href="../../booking_system/index.php"><i class="fas fa-calendar-check"></i> حجز موعد</a>
             </div>
             <div>
                 <a href="logout.php"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>

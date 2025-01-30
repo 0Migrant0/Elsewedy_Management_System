@@ -1,5 +1,5 @@
 <?php
-include 'db_connection.php';
+require_once '../../manegment_system/components/db.php';
 
 $message = ''; // متغير لتخزين الرسائل
 
@@ -16,14 +16,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
-        $sql = "INSERT INTO users (email, password) VALUES ('$email', '$hashed_password')";
-        if ($conn->query($sql) === TRUE) {
+        $sql = "INSERT INTO users (email, password) VALUES (?, ?)";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(1, $email);
+        $stmt->bindValue(2, $hashed_password);
+
+        if ($stmt->execute()) {
             $message = "تم التسجيل بنجاح";
         } else {
-            $message = "حدث خطأ: " . $conn->error;
+            $message = "حدث خطأ: " . $stmt->errorInfo()[2];
         }
+
+        $stmt = null;
     }
 }
+$pdo = null;
 ?>
 
 <!DOCTYPE html>

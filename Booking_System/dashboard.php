@@ -1,5 +1,5 @@
 <?php
-include 'components/auth.php';
+require_once 'components/auth.php';
 ?>
 <!DOCTYPE html>
 <html lang="ar">
@@ -17,8 +17,9 @@ include 'components/auth.php';
     <header>
         <nav>
             <div>
-                <a href="../Manegmennt_Syestem/index.php"><i class="fas fa-home"></i> الرئيسية</a>
-                <a href="../Manegmennt_Syestem\components/add_patient.php"><i class="fas fa-user-plus"></i> إضافة مريض</a>
+                <a href="../manegment_system/index.php"><i class="fas fa-home"></i> الرئيسية</a>
+                <a href="../manegment_system\components/add_patient.php"><i class="fas fa-user-plus"></i> إضافة
+                    مريض</a>
                 <a href="dashboard.php"><i class="fas fa-calendar-alt"></i> الحجوزات</a>
                 <a href="index.php"><i class="fas fa-calendar-check"></i> حجز موعد</a>
             </div>
@@ -52,16 +53,17 @@ include 'components/auth.php';
             <tbody>
                 <?php
                 ob_start(); // بدء تخزين الإخراج
-                include 'components/db_connection.php';
+                require_once '../manegment_system/components/db.php';
+
 
                 // استعلام للحصول على الحجوزات
                 $sql = "SELECT a.id, a.client_name, a.appointment_datetime, a.phone_number, a.registration_date, a.status, c.name 
                     FROM appointments a 
                     JOIN clinics c ON a.clinic_id = c.id";
-                $result = $conn->query($sql);
+                $result = $pdo->query($sql);
 
-                if ($result && $result->num_rows > 0) {
-                    while ($row = $result->fetch_assoc()) {
+                if ($result && $result->rowCount() > 0) {
+                    while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
                         echo "<tr>
                         <td>{$row['id']}</td>
                         <td>{$row['name']}</td>
@@ -106,25 +108,25 @@ include 'components/auth.php';
         if ($action == 'approve') {
             // تحديث الحالة إلى "تم الكشف"
             $update_sql = "UPDATE appointments SET status = 'تم الكشف' WHERE id = ?";
-            $stmt = $conn->prepare($update_sql);
-            $stmt->bind_param("i", $id);
+            $stmt = $pdo->prepare($update_sql);
+            $stmt->bindParam(1, $id, PDO::PARAM_INT);
             $stmt->execute();
-            $stmt->close();
+            unset($stmt);
             header("Location: dashboard.php"); // إعادة تحميل الصفحة
             exit();
         } elseif ($action == 'delete') {
             // حذف الحجز
             $delete_sql = "DELETE FROM appointments WHERE id = ?";
-            $stmt = $conn->prepare($delete_sql);
-            $stmt->bind_param("i", $id);
+            $stmt = $pdo->prepare($delete_sql);
+            $stmt->bindParam(1, $id, PDO::PARAM_INT); // Use positional placeholder
             $stmt->execute();
-            $stmt->close();
+            unset($stmt);
             header("Location: dashboard.php"); // إعادة تحميل الصفحة
             exit();
         }
     }
 
-    $conn->close();
+    unset($stmt);
     ob_end_flush(); // إنهاء تخزين الإخراج
     ?>
 </body>

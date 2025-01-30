@@ -1,13 +1,14 @@
 <?php
-include 'db_connection.php';
+require_once '../../manegment_system/components/db.php';
+
 $today = date("Y-m-d");
 $seven_days_later = date("Y-m-d", strtotime("+7 days"));
 
 $sql = "SELECT * FROM appointments WHERE date BETWEEN '$today' AND '$seven_days_later'";
-$result = $conn->query($sql);
+$result = $pdo->query($sql);
 
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
+if ($result->rowCount() > 0) {
+    while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
         echo "العيادة: " . $row['clinic_id'] . " - الطبيب: " . $row['doctor_id'] . " - التاريخ: " . $row['date'] . " - الوقت: " . $row['time_slot'] . "<br>";
     }
 } else {

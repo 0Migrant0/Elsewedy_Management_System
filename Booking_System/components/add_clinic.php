@@ -1,6 +1,6 @@
 <?php
 include 'auth.php'; // تأكد من إضافة ملف التحقق من الهوية
-include 'db_connection.php'; // تأكد من إضافة ملف الاتصال بقاعدة البيانات
+require_once '../../manegment_system/components/db.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = $_POST['name'];
@@ -34,24 +34,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     $sql = "INSERT INTO clinics (name, day_of_week, start_time, end_time) VALUES (?, ?, ?, ?)";
-    $stmt = $conn->prepare($sql);
+    $stmt = $pdo->prepare($sql);
 
     if ($stmt) {
-        $stmt->bind_param("ssss", $name, $day_of_week, $start_time, $end_time);
-
+        $stmt->bindParam(1, $name, PDO::PARAM_STR);
+        $stmt->bindParam(2, $day_of_week, PDO::PARAM_STR);
+        $stmt->bindParam(3, $start_time, PDO::PARAM_STR);
+        $stmt->bindParam(4, $end_time, PDO::PARAM_STR);
         if ($stmt->execute()) {
             // عرض رسالة نجاح وإعادة توجيه
             echo "<script>alert('تم إضافة العيادة بنجاح!'); window.location.href = '../dashboard.php';</script>";
             exit(); // إنهاء السكربت بعد إعادة التوجيه
         } else {
-            echo "حدث خطأ أثناء تنفيذ الاستعلام: " . $stmt->error;
+            $errorInfo = $stmt->errorInfo();
+            echo "حدث خطأ أثناء تنفيذ الاستعلام: " . $errorInfo[2];
         }
-        $stmt->close();
+        $stmt = null;
     } else {
-        echo "خطأ في إعداد الاستعلام: " . $conn->error;
+        $errorInfo = $pdo->errorInfo();
+        echo "خطأ في إعداد الاستعلام: " . $errorInfo[2];
     }
 
-    $conn->close();
+    $pdo = null;
 }
 ?>
 
@@ -63,9 +67,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>إضافة عيادة</title>
     <link rel="stylesheet" href="../styles/styles.css"> <!-- تأكد من أن اسم الملف صحيح -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 
 <body>
+    <header>
+        <nav>
+            <div>
+                <a href="../../manegment_system/index.php"><i class="fas fa-home"></i> الرئيسية</a>
+                <a href="../../manegment_system/components/add_patient.php"><i class="fas fa-user-plus"></i> إضافة مريض</a>
+                <a href="../dashboard.php"><i class="fas fa-calendar-alt"></i> الحجوزات</a>
+                <a href="../index.php"><i class="fas fa-calendar-check"></i> حجز موعد</a>
+            </div>
+            <div>
+                <a href="components/logout.php"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
+            </div>
+        </nav>
+    </header>
 
     <div class="add-clinic-container">
         <h1>إضافة عيادة</h1>
