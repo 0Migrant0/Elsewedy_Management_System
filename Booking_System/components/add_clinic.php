@@ -1,5 +1,5 @@
 <?php
-include 'auth.php'; // تأكد من إضافة ملف التحقق من الهوية
+require_once '../../Management_system/components/auth.php';
 require_once '../../manegment_system/components/db.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {

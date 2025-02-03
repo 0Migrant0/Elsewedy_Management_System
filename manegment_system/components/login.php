@@ -1,9 +1,9 @@
 <?php
-session_start();
+require_once 'db.php'; // Include your database configuration file
 
-// Redirect to add_patient.php if already logged in
+// Redirect to index.php if already logged in
 if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
-    header('Location: add_patient.php');
+    header('Location: ../index.php');
     exit;
 }
 
@@ -13,18 +13,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
     $password = $_POST['password'];
 
-    // Replace this hardcoded admin login with a database check
-    $admin_email = "a@gmail.com"; // Replace with a database query
-    $admin_password = password_hash("123", PASSWORD_DEFAULT); // Simulate stored hashed password
+    try {
+        // Prepare and execute
+        $stmt = $pdo->prepare("SELECT password FROM users WHERE email = :email");
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
 
-    // Validate login credentials
-    if ($email === $admin_email && password_verify($password, $admin_password)) {
-        $_SESSION['admin_logged_in'] = true;
-        $_SESSION['admin_email'] = $email; // Save additional session data if needed
-        header('Location: add_patient.php');
-        exit;
-    } else {
+        if ($stmt->rowCount() > 0) {
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $hashed_password = $row['password'];
+
+            // Validate login credentials
+            if (password_verify($password, $hashed_password)) {
+                // Regenerate session ID to prevent session fixation
+                session_regenerate_id(true);
+                $_SESSION['admin_logged_in'] = true;
+                $_SESSION['admin_email'] = $email; // Save additional session data if needed
+                header('Location: ../index.php');
+                exit;
+            }
+        }
+        // Generic error message to prevent user enumeration
         $error = "البريد الإلكتروني أو كلمة المرور غير صحيحة!";
+    } catch (PDOException $e) {
+        die("Connection failed: " . $e->getMessage());
     }
 }
 ?>

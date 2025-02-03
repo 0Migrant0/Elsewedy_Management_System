@@ -1,3 +1,7 @@
+<?php
+require_once '../manegment_system/components/auth.php';
+require_once '../manegment_system/components/db.php';
+?>
 <!DOCTYPE html>
 <html lang="ar">
 
@@ -20,9 +24,6 @@
                 <select class="clinic-select" id="clinic" name="clinic" onchange="fetchAvailableDays()" required>
                     <option value="">اختر العيادة</option>
                     <?php
-                    require_once '../manegment_system/components/db.php';
-
-
                     $sql = "SELECT id, name FROM clinics";
                     $result = $pdo->query($sql);
                     while ($row = $result->fetch(PDO::FETCH_ASSOC)) {

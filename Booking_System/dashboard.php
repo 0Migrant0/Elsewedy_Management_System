@@ -1,5 +1,5 @@
 <?php
-require_once 'components/auth.php';
+require_once '../manegment_system/components/auth.php';
 ?>
 <!DOCTYPE html>
 <html lang="ar">

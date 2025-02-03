@@ -1,13 +1,6 @@
 <?php
-session_start();
-
+require_once 'auth.php';
 require_once 'db.php';
-
-// تحقق إذا كان المسؤول قد سجل الدخول
-if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
-    header('Location: login.php'); // إعادة التوجيه إلى صفحة تسجيل الدخول
-    exit;
-}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // تطهير والتحقق من المدخلات

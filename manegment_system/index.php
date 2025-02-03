@@ -1,6 +1,5 @@
 <?php
-session_start();
-
+require_once 'components/auth.php';
 require_once 'components/db.php';
 
 // معالجة تعديل الحالة

@@ -1,6 +1,5 @@
 <?php
-session_start();
-
+require_once 'auth.php';
 require_once 'db.php';
 
 // الحصول على معرف المريض
