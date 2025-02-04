@@ -15,7 +15,7 @@ if (!isset($_SESSION['initiated'])) {
 
 // Check if user is authenticated
 if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
-    header("Location: login.php");
+    header("Location: ../../Management_system\manegment_system\components\login.php");
     exit();
 }
 ?>
