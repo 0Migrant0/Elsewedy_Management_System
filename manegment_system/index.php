@@ -133,7 +133,7 @@ $patients = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <th>رقم الهاتف</th>
                     <th>الحالة</th>
                     <th>شركة التعاقد</th>
-                    <th>التشخيص</th>
+                    <th>التخصص الدقيق</th>
                     <th>التاريخ</th>
                     <th>تعديل</th>
                     <th>حذف</th>
@@ -161,7 +161,14 @@ $patients = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <!-- <td>
                                 <?//= htmlspecialchars($patient['notes']) ?>
                             </td> -->
-                            <td><?= htmlspecialchars($patient['diagnosis']) ?></td>
+                            <!-- <td>
+                                <?//= htmlspecialchars($patient['diagnosis']) ?>
+                            </td> -->
+                            <td>
+                                <p><?= htmlspecialchars($patient['specialization'] ?? 'غير محدد') ?></p> 
+                            </td>
+                    
+
                             <td><?= htmlspecialchars($patient['created_at']) ?></td>
                             <td>
                                 <a href="components/view_patient.php?id=<?= htmlspecialchars($patient['id']) ?>">عرض</a>
