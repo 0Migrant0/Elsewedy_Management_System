@@ -113,6 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <p>رقم المريض: <?= htmlspecialchars($patient['medical_id']) ?></p>
                 <p>رقم الهاتف: <?= htmlspecialchars($patient['phone']) ?></p>
                 <p>العيادة: <?= htmlspecialchars($patient['clinic_name'] ?? 'غير محدد') ?></p>
+                <p>التخصص الدقيق: <?= htmlspecialchars($patient['specialization'] ?? 'غير محدد') ?></p>
                 <p>الحالة: <?= htmlspecialchars($patient['status']) ?></p>
                 <p>التعاقد: <?= htmlspecialchars($patient['contract'] ?? 'لا يوجد تعاقد') ?></p>
 
@@ -120,6 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div>
                 <h2>بيانات إضافية</h2>
                 <p><span>التشخيص:</span> <?= htmlspecialchars($patient['diagnosis'] ?? 'لا يوجد تشخيص') ?></p>
+                <p><span>الملاحظات:</span> <?= htmlspecialchars($patient['notes'] ?? 'لا يوجد ملاحظات  ') ?></p>
             </div>
         </div>
         <div class="files">
@@ -178,6 +180,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 </div>
             </div>
+            <div>
+                <h2> الملفات:</h2>
+                <div class="image-scroll-wrapper">
+                    <div class="image-container">
+                        <?php
+                        if (!empty($patient['file_path'])):
+                            $prescriptions = json_decode($patient['file_path'], true) ?? [];
+                            foreach ($prescriptions as $prescription): ?>
+                                <div class="image-wrapper">
+                                    <img src="<?= htmlspecialchars($prescription) ?>" alt=" الملفات" class="popup-image">
+                                </div>
+                            <?php endforeach;
+                        else: ?>
+                            <p>لا توجد  ملفات</p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Popup Modal -->
@@ -211,10 +231,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input type="text" id="injection_notes" name="injection_notes"
                     value="<?= htmlspecialchars($patient['injection_notes'] ?? '') ?>">
 
-                <label for="medicine_price">سعر الدواء:</label>
+                <label for="medicine_price">سعر المستلزمات:</label>
                 <input type="number" id="medicine_price" name="medicine_price" step="0.01"
                     value="<?= htmlspecialchars($patient['medicine_price'] ?? 0) ?>">
-                <label for="medicine_notes">تفاصيل الدواء:</label>
+                <label for="medicine_notes">تفاصيل المستلزمات:</label>
                 <input type="text" id="medicine_notes" name="medicine_notes"
                     value="<?= htmlspecialchars($patient['medicine_notes'] ?? '') ?>">
 

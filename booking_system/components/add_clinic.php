@@ -1,8 +1,10 @@
 <?php
-require_once '../../Management_system/components/auth.php';
+require_once '../../manegment_system/components/auth.php';
 require_once '../../manegment_system/components/db.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $governorate = $_POST['governorate']; // استقبال قيمة المحافظة
+    $city = $_POST['city']; // استقبال قيمة المدينة
     $name = $_POST['name'];
     $start_time = $_POST['start_time'];
     $end_time = $_POST['end_time'];
@@ -33,14 +35,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $day_of_week = "";
     }
 
-    $sql = "INSERT INTO clinics (name, day_of_week, start_time, end_time) VALUES (?, ?, ?, ?)";
+    $sql = "INSERT INTO clinics ( governorate, city,name, day_of_week, start_time, end_time) VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = $pdo->prepare($sql);
+    
 
     if ($stmt) {
         $stmt->bindParam(1, $name, PDO::PARAM_STR);
         $stmt->bindParam(2, $day_of_week, PDO::PARAM_STR);
         $stmt->bindParam(3, $start_time, PDO::PARAM_STR);
         $stmt->bindParam(4, $end_time, PDO::PARAM_STR);
+        $stmt->bindParam(5, $governorate, PDO::PARAM_STR); // ربط قيمة المحافظة
+        $stmt->bindParam(6, $city, PDO::PARAM_STR); // ربط قيمة المدينة
         if ($stmt->execute()) {
             // عرض رسالة نجاح وإعادة توجيه
             echo "<script>alert('تم إضافة العيادة بنجاح!'); window.location.href = '../dashboard.php';</script>";
@@ -94,6 +99,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div> -->
 
         <form action="add_clinic.php" method="post">
+            <!-- حقل المحافظة -->
+            <label for="governorate">المحافظة</label>
+            <input type="text" name="governorate" id="governorate" required>
+
+            <!-- حقل المدينة -->
+            <label for="city">المدينة</label>
+            <input type="text" name="city" id="city" required>
+
             <label for="name">اسم العيادة</label>
             <input type="text" name="name" id="name" required>
 
