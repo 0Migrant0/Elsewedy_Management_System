@@ -52,47 +52,50 @@ require_once '../manegment_system/components/db.php';
                 <input class="button" type="submit" value="حجز موعد" class="submit-button">
             </form>
         </div>
-        <aside class="date-plan">
-            <div>
-                <h2>محافظة القاهرة</h2>
-                <p>
-                    حدائق القبة: مستشفى الفؤاد (السبت) من <span>(5 م&nbsp;) - (7 م&nbsp;)</span>
-                </p>
-            </div>
-            <div>
-                <h2>محافظة الشرقية</h2>
-                <p>
-                    العاشر من رمضان: مستشفى الفؤاد (الأثنين و ألاربعاء) من <span>(4 م&nbsp;) - (10 م&nbsp;)</span>
-                </p>
-                <p>
-                    العاشر من رمضان: مستشفى شرف (ألاربعاء) من <span>(10 ص&nbsp;) - (12 ص&nbsp;)</span>
-                </p>
-                <p>
-                    بلبيس: حي الزهور (الأحد و الخميس) من <span>(8 ص&nbsp;) - (10 م&nbsp;)</span>
-                </p>
-                <p>
-                    بلبيس: حي الزهور (الثلاثاء) من <span>(2 م&nbsp;) - (11 م&nbsp;)</span>
-                </p>
+        <?php
+        // Fetch data from the database
+        $sql = "SELECT id, name, day_of_week, start_time, end_time, city, governorate 
+        FROM clinics
+        ORDER BY governorate, city, name, day_of_week";
 
-                <p>
-                    بلبيس: الكفر القديم (الجمعة) من <span>(7 ص&nbsp;) - (9 ص&nbsp;)</span>
-                </p>
-                <p>
-                    بلبيس: غيته (الجمعة) من <span>(9 ص&nbsp;) - (11 ص&nbsp;)</span>
-                </p>
-                <p>
-                    ابو حماد: مستشفى نبراس التخصصي (الجمعة) من <span>(4 م&nbsp;) - (6 م&nbsp;)</span>
-                </p>
-                <p>
-                    ابو حماد: مركز سويد الطبي (الجمعة) من <span>(6 م&nbsp;) - (8 م&nbsp;)</span>
-                </p>
-            </div>
-            <div>
-                <h2>محافظة السويس</h2>
-                <p>
-                    شارع صلاح الدين: بجوار صيدليه صلاح الدين (الأثنين) من <span>(11 ص&nbsp;) - (1 م&nbsp;)</span>
-                </p>
-            </div>
+        $stmt = $pdo->query($sql);
+
+        $data = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            // Convert time to 12-hour format
+            $start_time = date("g:i A", strtotime($row['start_time']));
+            $end_time = date("g:i A", strtotime($row['end_time']));
+            $start_time = str_replace(['AM', 'PM'], ['ص', 'م'], $start_time);
+            $end_time = str_replace(['AM', 'PM'], ['ص', 'م'], $end_time);
+
+            // Organize data by government, city, and clinic
+            $data[$row['governorate']][$row['city']][] = [
+                'clinic_name' => $row['name'],
+                'day_of_week' => $row['day_of_week'],
+                'start_time' => $start_time,
+                'end_time' => $end_time,
+            ];
+        }
+        ?>
+
+        <!-- Generate HTML -->
+        <aside class="date-plan">
+            <?php foreach ($data as $government => $cities): ?>
+                <div>
+                    <h2><?= htmlspecialchars($government) ?></h2>
+                    <?php foreach ($cities as $city => $clinics): ?>
+                        <?php foreach ($clinics as $clinic): ?>
+                            <p>
+                                <?= htmlspecialchars($city) ?>:
+                                <?= htmlspecialchars($clinic['clinic_name']) ?>
+                                (<?= htmlspecialchars($clinic['day_of_week']) ?>)
+                                من <span>(<?= htmlspecialchars($clinic['start_time']) ?>) -
+                                    (<?= htmlspecialchars($clinic['end_time']) ?>)</span>
+                            </p>
+                        <?php endforeach; ?>
+                    <?php endforeach; ?>
+                </div>
+            <?php endforeach; ?>
         </aside>
     </div>
 
