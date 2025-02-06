@@ -92,11 +92,6 @@ require_once '../manegment_system/components/auth.php';
                 ?>
             </tbody>
         </table>
-
-        <!-- زر تسجيل الخروج في الأسفل -->
-        <div class="logout">
-            <a href="logout.php">تسجيل الخروج</a>
-        </div>
     </div>
 
     <?php

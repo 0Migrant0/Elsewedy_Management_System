@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $diagnosis = htmlspecialchars(trim($_POST['diagnosis']));
     $contract = htmlspecialchars(trim($_POST['contract']));
     $clinic_id = htmlspecialchars(trim($_POST['clinic_id']));
-    $specialization = htmlspecialchars(trim($_POST['specialization'])); 
+    $specialization = htmlspecialchars(trim($_POST['specialization']));
     // $specialization = isset($_POST['specialization']) ? htmlspecialchars(trim($_POST['specialization'])) : null;
 
     $current_date = date('Y-m-d');
@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // التحقق من الحقول الإلزامية
-    if (empty($name) || empty($medical_id) || empty($phone) || empty($clinic_id)  || empty($specialization)) {
+    if (empty($name) || empty($medical_id) || empty($phone) || empty($clinic_id) || empty($specialization)) {
         echo "الاسم، الرقم المرضي، ورقم الهاتف، والعيادة،والتخصص الدقيق مطلوبين.";
         exit;
     }
@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $uploaded_files = [];
-    foreach (['xray_images', 'test_files', 'prescriptions','file_path'] as $file_input_name) {
+    foreach (['xray_images', 'test_files', 'prescriptions', 'file_path'] as $file_input_name) {
         if (isset($_FILES[$file_input_name]) && is_array($_FILES[$file_input_name]['name'])) {
             // Ensure the medical_id directory is included in the path
             $file_type_dir = $upload_dir . $file_input_name . '/' . $current_date . '/' . $medical_id . '/';
@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     die("Failed to create directory: $file_type_dir");
                 }
             }
-          
+
 
             foreach ($_FILES[$file_input_name]['name'] as $key => $file_name) {
                 if (!empty($file_name)) {
@@ -88,10 +88,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             json_encode($uploaded_files['xray_images'] ?? []),
             json_encode($uploaded_files['test_files'] ?? []),
             json_encode($uploaded_files['prescriptions'] ?? []),
-            json_encode($uploaded_files['file_path'] ?? []), 
+            json_encode($uploaded_files['file_path'] ?? []),
             $contract,
             $clinic_id,
-            $clinic_name ,// حفظ اسم العيادة في قاعدة البيانات
+            $clinic_name,// حفظ اسم العيادة في قاعدة البيانات
             $specialization
         ]);
 
@@ -193,7 +193,7 @@ try {
                 <label for="phone">رقم الهاتف:</label>
                 <input type="text" id="phone" name="phone" required>
             </div>
-           
+
             <div>
                 <label for="diagnosis">التشخيص:</label>
                 <textarea id="diagnosis" name="diagnosis"></textarea>
@@ -228,12 +228,12 @@ try {
             <div>
                 <label for="specialization">التخصص الدقيق:</label>
                 <select id="specialization" name="specialization" required>
-                <option value="">اختر التخصص</option>
-                <option value="كسور"> كسور </option>
-                <option value="أطفال">أطفال </option>
-                <option value="مفاصل">مفاصل </option>
-                <option value="طب رياضي">طب رياضي </option>
-                <option value="أطفال CP "> أطفال CP </option>
+                    <option value="">اختر التخصص</option>
+                    <option value="كسور"> كسور </option>
+                    <option value="أطفال">أطفال </option>
+                    <option value="مفاصل">مفاصل </option>
+                    <option value="طب رياضي">طب رياضي </option>
+                    <option value="أطفال CP "> أطفال CP </option>
                 </select>
             </div>
             <div>
