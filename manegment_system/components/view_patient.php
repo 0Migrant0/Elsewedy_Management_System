@@ -100,6 +100,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <a href="../../booking_system/index.php"><i class="fas fa-calendar-check"></i> حجز موعد</a>
             </div>
             <div>
+                <a href="generate_pdf.php?id=<?= htmlspecialchars($patient['id']) ?>" class="btn btn-primary">
+                    <i class="fas fa-file-pdf"></i> تحميل كملف PDF
+                </a>
                 <a href="logout.php"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
             </div>
         </nav>
@@ -193,7 +196,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 </div>
                             <?php endforeach;
                         else: ?>
-                            <p>لا توجد  ملفات</p>
+                            <p>لا توجد ملفات</p>
                         <?php endif; ?>
                     </div>
                 </div>

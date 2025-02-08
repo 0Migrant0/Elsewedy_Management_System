@@ -13,6 +13,32 @@ require_once '../manegment_system/components/db.php';
 </head>
 
 <body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="#" class="nav-link" id="about-doctor-btn">دكتور محمد أحمد فهمي السويدي</a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Popup Container -->
+    <div class="popup-container" id="popup">
+        <div class="popup-content">
+            <span class="close-btn" id="close-popup">&times;</span>
+            <h2 class="popup-title">دكتور محمد أحمد فهمي السويدي</h2>
+            <img src="images/about_doctor.png" alt="Dr. Mohamed Ahmed Fawzy" class="doctor-image">
+            <div class="popup-text">
+                <p>استشاري جراحة العظام وعظام الأطفال، يتميز دكتور محمد أحمد فهمي السويدي بخبرته الواسعة في مجال
+                    الجراحة.</p>
+                <p>حصل على بكالوريوس جراحة وطب وجراحة من جامعة الأزهر - أسيوط عام 2002.</p>
+                <p>حاصل على ماجستير جراحة العظام من جامعة عين شمس.</p>
+                <p>حاصل على دبلوم إدارة المستشفيات من أكاديمية السادات للعلوم الإدارية.</p>
+                <p>كما حصل على دبلوم متخصص في جراحة عظام الأطفال من المعهد القومي للحركة.</p>
+            </div>
+        </div>
+    </div>
+
     <div class="aside-handel">
         <div class="book-container">
             <h1 class="appoint-title">حجز موعد</h1>
@@ -100,6 +126,30 @@ require_once '../manegment_system/components/db.php';
     </div>
 
     <script>
+        //navbar//
+        // Select elements
+        const aboutDoctorBtn = document.getElementById('about-doctor-btn');
+        const popup = document.getElementById('popup');
+        const closePopupBtn = document.getElementById('close-popup');
+
+        // Open popup
+        aboutDoctorBtn.addEventListener('click', () => {
+            popup.style.display = 'flex';
+        });
+
+        // Close popup
+        closePopupBtn.addEventListener('click', () => {
+            popup.style.display = 'none';
+        });
+
+        // Close popup if user clicks outside of it
+        window.addEventListener('click', (event) => {
+            if (event.target === popup) {
+                popup.style.display = 'none';
+            }
+        });
+
+        //Days handel//
         const daysInArabic = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
         const daysInEnglish = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
