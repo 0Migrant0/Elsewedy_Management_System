@@ -34,7 +34,7 @@ require_once '../manegment_system/components/auth.php';
 
         <!-- زر إضافة عيادة -->
         <div class="add-clinic">
-            <a href="components/add_clinic.php" class="add-clinic-button">إضافة عيادة جديدة</a>
+            <a href="components/add_clinic.php" class="add-clinic-button"><i class="fas fa-clinic-medical"></i> ادارة العيادات</a>
         </div>
 
         <table>

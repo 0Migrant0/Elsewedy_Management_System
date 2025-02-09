@@ -252,7 +252,7 @@ try {
                 <label for="file_path">الملفات:</label>
                 <input type="file" id="file_path" name="file_path[]" multiple>
             </div>
-            <button type="submit">إضافة المريض</button>
+            <button type="submit"><i class="fas fa-user-plus"></i> إضافة المريض</button>
         </form>
     </div>
 
