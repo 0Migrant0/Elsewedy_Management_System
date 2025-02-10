@@ -106,21 +106,25 @@ try {
 <body>
     <header>
         <nav>
-            <div>
+            <div class="menu-toggle" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
+            <div class="menu">
                 <a href="../../manegment_system/index.php"><i class="fas fa-home"></i> الرئيسية</a>
                 <a href="../../manegment_system/components/add_patient.php"><i class="fas fa-user-plus"></i> إضافة
                     مريض</a>
                 <a href="../dashboard.php"><i class="fas fa-calendar-alt"></i> الحجوزات</a>
                 <a href="../index.php"><i class="fas fa-calendar-check"></i> حجز موعد</a>
-            </div>
-            <div>
                 <a href="components/logout.php"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
             </div>
         </nav>
     </header>
     <div class="manage-clinic-container">
         <div class="clinics-table-container">
-            <h2><i class="fas fa-clinic-medical"></i> إدارة العيادات</h2>
+            <div class="add-clinic-container-header">
+                <h2><i class="fas fa-clinic-medical"></i> إدارة العيادات</h2>
+                <h2><a href="#add-clinic-container"><i class="fas fa-plus-circle"></i> إضافة عيادة</a></h2>
+            </div>
             <table border="1" cellpadding="10" cellspacing="0">
                 <thead>
                     <tr>
@@ -175,9 +179,9 @@ try {
         </div>
 
 
-        <div class="add-clinic-container">
-            <h1>إضافة عيادة</h1>
-
+        <div class="add-clinic-container" id="add-clinic-container">
+            <h2><i class="fas fa-plus-circle"></i> إضافة عيادة</h2>
+<br>
             <form action="add_clinic.php" method="post">
                 <!-- Governorate -->
                 <label for="governorate">المحافظة</label>
@@ -386,6 +390,13 @@ try {
                 }
             });
         });
+
+        // toggle menu
+        function toggleMenu() {
+            const menu = document.querySelector('nav .menu');
+            menu.classList.toggle('active');
+        }
+
     </script>
 </body>
 

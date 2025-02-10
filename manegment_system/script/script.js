@@ -28,5 +28,9 @@ window.onclick = function(event) {
         modal.style.display = "none";
     }
 }
-
+// toggle menu
+function toggleMenu() {
+    const menu = document.querySelector('nav .menu');
+    menu.classList.toggle('active');
+}
 

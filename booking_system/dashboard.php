@@ -16,14 +16,15 @@ require_once '../manegment_system/components/auth.php';
 
     <header>
         <nav>
-            <div>
+        <div class="menu-toggle" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
+            <div class="menu">
                 <a href="../manegment_system/index.php"><i class="fas fa-home"></i> الرئيسية</a>
                 <a href="../manegment_system\components/add_patient.php"><i class="fas fa-user-plus"></i> إضافة
                     مريض</a>
                 <a href="dashboard.php"><i class="fas fa-calendar-alt"></i> الحجوزات</a>
                 <a href="index.php"><i class="fas fa-calendar-check"></i> حجز موعد</a>
-            </div>
-            <div>
                 <a href="logout.php"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
             </div>
         </nav>
@@ -34,7 +35,8 @@ require_once '../manegment_system/components/auth.php';
 
         <!-- زر إضافة عيادة -->
         <div class="add-clinic">
-            <a href="components/add_clinic.php" class="add-clinic-button"><i class="fas fa-clinic-medical"></i> ادارة العيادات</a>
+            <a href="components/add_clinic.php" class="add-clinic-button"><i class="fas fa-clinic-medical"></i> ادارة
+                العيادات</a>
         </div>
 
         <table>
@@ -65,14 +67,14 @@ require_once '../manegment_system/components/auth.php';
                 if ($result && $result->rowCount() > 0) {
                     while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
                         echo "<tr>
-                        <td>{$row['id']}</td>
-                        <td>{$row['name']}</td>
-                        <td>{$row['client_name']}</td>
-                        <td>{$row['appointment_datetime']}</td>
-                        <td>{$row['phone_number']}</td>
-                        <td>{$row['registration_date']}</td>
-                        <td>{$row['status']}</td>
-                        <td class='buttons'>
+                        <td data-label='رقم الحجز'>{$row['id']}</td>
+                        <td data-label='اسم العيادة'>{$row['name']}</td>
+                        <td data-label='اسم المريض'>{$row['client_name']}</td>
+                        <td data-label='تاريخ ووقت الحجز'>{$row['appointment_datetime']}</td>
+                        <td data-label='رقم الهاتف'>{$row['phone_number']}</td>
+                        <td data-label='تاريخ التسجيل'>{$row['registration_date']}</td>
+                        <td data-label='الحالة'>{$row['status']}</td>
+                        <td data-label='إجراءات' class='buttons'>
                             <form method='POST' style='display:inline-block;'>
                                 <input type='hidden' name='id' value='{$row['id']}'>
                                 <input type='hidden' name='action' value='approve'>
@@ -124,6 +126,13 @@ require_once '../manegment_system/components/auth.php';
     unset($stmt);
     ob_end_flush(); // إنهاء تخزين الإخراج
     ?>
+    <script>
+        // toggle menu
+        function toggleMenu() {
+            const menu = document.querySelector('nav .menu');
+            menu.classList.toggle('active');
+        }
+    </script>
 </body>
 
 </html>

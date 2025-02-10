@@ -1,15 +1,22 @@
+/******* Start custom style *******/
+/* General */
 * {
   box-sizing: border-box;
   margin: 0;
+  padding: 0;
   font-family: "Times New Roman", Times, serif;
+  scroll-behavior: smooth;
 }
+
 html {
+  background-color: #bed7eb;
   background-image: url("../images/bg.jpg");
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
   height: 100%;
 }
+
 body {
   direction: rtl;
 }
@@ -62,6 +69,24 @@ nav > div > a {
   font-size: 1.5rem;
   font-weight: 500;
 }
+
+nav .menu {
+  width: 100%;
+}
+
+.pdf-btn {
+  margin-right: auto;
+}
+
+nav .menu a:last-child {
+  margin-right: auto;
+}
+
+.menu-toggle {
+  display: none;
+  cursor: pointer;
+}
+
 /* Beghin Login styles */
 .login-container {
   width: fit-content;
@@ -532,7 +557,7 @@ th {
 /* Beghin Add Clinic styles */
 .manage-clinic-container {
   display: grid;
-  grid-template-columns: auto auto;
+  grid-template-columns: auto;
   padding: 2rem;
 }
 
@@ -548,11 +573,16 @@ th {
 .add-clinic-container {
   width: 20rem;
   margin: 0 auto;
-  padding:1rem;
+  padding: 1rem;
   margin-top: 1rem;
   background-color: #ffffff9e;
   border-radius: 0.4rem;
   box-shadow: 0 0 5px 1px #00000096;
+}
+
+.add-clinic-container-header {
+  display: flex;
+  justify-content: space-between;
 }
 
 .add-clinic-container > form {
@@ -576,7 +606,7 @@ th {
   margin-left: 0.2rem;
 }
 
-.edit-work-days{
+.edit-work-days {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: repeat(3, 1fr);
@@ -639,11 +669,84 @@ th {
     grid-template-columns: 1fr 1fr;
   }
 }
+
+@media (max-width: 1100px) {
+  table,
+  thead,
+  tbody,
+  th,
+  td,
+  tr {
+    display: block;
+  }
+
+  thead tr {
+    display: none;
+  }
+
+  tbody tr {
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+  }
+
+  tbody td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: right;
+    padding: 10px;
+    border: none;
+    border-bottom: 1px solid #ddd;
+  }
+
+  tbody td:last-child {
+    border-bottom: none;
+  }
+
+  tbody td:before {
+    content: attr(data-label);
+    flex: 1;
+    font-weight: bold;
+    padding: 0 1rem 0 1rem;
+  }
+}
+
 @media (max-width: 900px) {
   .aside-handel {
     grid-template-columns: 1fr;
   }
 }
+
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: block;
+  }
+
+  nav div {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  nav div.active {
+    display: flex;
+  }
+
+  nav a {
+    margin: 10px 0;
+  }
+
+  .pdf-btn {
+    margin-right: 0;
+  }
+
+  nav .menu a:last-child {
+    margin-right: 0;
+  }
+}
+
 @media (max-width: 600px) {
   .book-container {
     width: 70%;
