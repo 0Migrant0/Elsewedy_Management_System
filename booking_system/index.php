@@ -165,19 +165,28 @@ require_once '../manegment_system/components/db.php';
                 xhr.open("GET", `components/available_days.php?clinic_id=${clinicId}`, true);
                 xhr.onload = function () {
                     if (this.status == 200) {
+
                         const days = JSON.parse(this.responseText);
                         days.forEach(day => {
-                            appointmentDaySelect.innerHTML += `<option value="${day}">${day}</option>`;
+                            const trimmedDay = day.trim(); // Trim the day name
+                            appointmentDaySelect.innerHTML += `<option value="${trimmedDay}">${trimmedDay}</option>`;
                         });
 
                         // اختيار اليوم الأول وتحديث التاريخ تلقائيًا
                         if (days.length > 0) {
-                            appointmentDaySelect.value = days[0];
+                            appointmentDaySelect.value = days[0].trim(); // Trim the first day name
                             updateDateAndFetchSlots(); // تحديث التاريخ حسب اليوم الأول تلقائيًا
                         }
+                    } else {
+                        console.error(`Failed to fetch available days. Status: ${this.status}`);
                     }
                 };
+                xhr.onerror = function () {
+                    console.error('Request error...');
+                };
                 xhr.send();
+            } else {
+                console.error('Clinic ID is missing.');
             }
         }
 
@@ -197,6 +206,7 @@ require_once '../manegment_system/components/db.php';
 
                 if (selectedDayIndex === -1) {
                     appointmentDateField.value = ""; // إذا لم يتم العثور على اليوم
+                    console.error("Selected day not found in both Arabic and English arrays.");
                     return;
                 }
 
@@ -213,6 +223,8 @@ require_once '../manegment_system/components/db.php';
                 appointmentDateField.value = `${year}-${month}-${day}`;
 
                 fetchAvailableSlots();
+            } else {
+                console.error("Selected day or clinic ID is missing.");
             }
         }
 
