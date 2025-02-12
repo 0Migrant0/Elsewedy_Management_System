@@ -232,6 +232,22 @@ require_once '../manegment_system/components/db.php';
                 xhr.send();
             }
         }
+        // Function to validate phone number
+        function validatePhoneNumber(phoneNumber) {
+            const phonePattern = /^0[0-9]{10}$/; // Adjust the pattern to ensure the number starts with 0 and is 11 digits long
+            return phonePattern.test(phoneNumber);
+        }
+
+        // Add event listener to the form submission
+        document.querySelector('.form-con').addEventListener('submit', function (event) {
+            const phoneNumberInput = document.getElementById('phone_number');
+            const phoneNumber = phoneNumberInput.value;
+
+            if (!validatePhoneNumber(phoneNumber)) {
+                alert('يرجى إدخال رقم هاتف صحيح مكون من 11 رقمًا يبدأ بـ 0.');
+                event.preventDefault(); // Prevent form submission
+            }
+        });
     </script>
 </body>
 
