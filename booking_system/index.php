@@ -27,7 +27,7 @@ require_once '../manegment_system/components/db.php';
         <div class="popup-content">
             <span class="close-btn" id="close-popup">&times;</span>
             <h2 class="popup-title">دكتور محمد أحمد فهمي السويدي</h2>
-            <img src="images/about_doctor.png" alt="Dr. Mohamed Ahmed Fawzy" class="doctor-image">
+            <!-- <img src="images/about_doctor.png" alt="Dr. Mohamed Ahmed Fawzy" class="doctor-image"> -->
             <div class="popup-text">
                 <p>استشاري جراحة العظام وعظام الأطفال، يتميز دكتور محمد أحمد فهمي السويدي بخبرته الواسعة في مجال
                     الجراحة.</p>
