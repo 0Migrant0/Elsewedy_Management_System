@@ -79,13 +79,14 @@ $patients = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <body>
     <header>
         <nav>
-            <div>
+            <div class="menu-toggle" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
+            <div class="menu">
                 <a href="index.php"><i class="fas fa-home"></i> الرئيسية</a>
                 <a href="components/add_patient.php"><i class="fas fa-user-plus"></i> إضافة مريض</a>
                 <a href="../booking_system/dashboard.php"><i class="fas fa-calendar-alt"></i> الحجوزات</a>
                 <a href="../booking_system/index.php"><i class="fas fa-calendar-check"></i> حجز موعد</a>
-            </div>
-            <div>
                 <a href="components/logout.php"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
             </div>
         </nav>
@@ -116,12 +117,17 @@ $patients = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <input type="text" id="medical_id_query" name="medical_id_query"
                     value="<?= htmlspecialchars($medical_id_query) ?>" placeholder="الرقم المرضي">
             </div>
-            <div><label for="date_query">بحث بالتاريخ:</label>
+            <div>
+                <label for="date_query">بحث بالتاريخ:</label>
                 <input type="date" id="date_query" name="date_query" value="<?= htmlspecialchars($date_query) ?>">
             </div>
             <div>
-                <button type="submit">بحث</button>
-                <button type="submit" name="show_all" value="1">عرض جميع المرضى</button>
+                <button type="submit">
+                    <i class="fas fa-search"></i> بحث
+                </button>
+                <button type="submit" name="show_all" value="1">
+                    <i class="fas fa-eye"></i> عرض جميع المرضى
+                </button>
             </div>
         </form>
 
@@ -143,41 +149,33 @@ $patients = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <?php if (count($patients) > 0): ?>
                     <?php foreach ($patients as $patient): ?>
                         <tr>
-                            <td><?= htmlspecialchars($patient['name']) ?></td>
-                            <td><?= htmlspecialchars($patient['medical_id']) ?></td>
-                            <td><?= htmlspecialchars($patient['phone']) ?></td>
-                            <td>
+                            <td data-label="الاسم"><?= htmlspecialchars($patient['name']) ?></td>
+                            <td data-label="الرقم المرضي"><?= htmlspecialchars($patient['medical_id']) ?></td>
+                            <td data-label="رقم الهاتف"><?= htmlspecialchars($patient['phone']) ?></td>
+                            <td data-label="الحالة">
                                 <form method="POST" action="">
                                     <select name="status" required>
                                         <option value="كشف" <?= $patient['status'] === 'كشف' ? 'selected' : '' ?>>كشف</option>
-                                        <option value="مراجعة" <?= $patient['status'] === 'مراجعة' ? 'selected' : '' ?>>مراجعة
-                                        </option>
+                                        <option value="مراجعة" <?= $patient['status'] === 'مراجعة' ? 'selected' : '' ?>>مراجعة</option>
                                     </select>
-                                    <button type="submit" name="update_status"
-                                        value="<?= htmlspecialchars($patient['id']) ?>">تحديث</button>
+                                    <button type="submit" name="update_status" value="<?= htmlspecialchars($patient['id']) ?>">
+                                        <i class="fas fa-sync-alt"></i> تحديث
+                                    </button>
                                 </form>
                             </td>
-                            <td><?= htmlspecialchars($patient['contract'] ?? 'غير محدد') ?></td>
-                            <!-- <td>
-                                <?//= htmlspecialchars($patient['notes']) ?>
-                            </td> -->
-                            <!-- <td>
-                                <?//= htmlspecialchars($patient['diagnosis']) ?>
-                            </td> -->
-                            <td>
-                                <p><?= htmlspecialchars($patient['specialization'] ?? 'غير محدد') ?></p> 
+                            <td data-label="شركة التعاقد"><?= htmlspecialchars($patient['contract'] ?? 'غير محدد') ?></td>
+                            <td data-label="التخصص الدقيق">
+                                <p><?= htmlspecialchars($patient['specialization'] ?? 'غير محدد') ?></p>
                             </td>
-                    
-
-                            <td><?= htmlspecialchars($patient['created_at']) ?></td>
-                            <td>
+                            <td data-label="التاريخ"><?= htmlspecialchars($patient['created_at']) ?></td>
+                            <td data-label="تعديل">
                                 <a href="components/view_patient.php?id=<?= htmlspecialchars($patient['id']) ?>">عرض</a>
                             </td>
-                            <td>
-                                <form method="POST" action=""
-                                    onsubmit="return confirm('هل أنت متأكد أنك تريد حذف هذا المريض؟');">
-                                    <button type="submit" name="delete_patient"
-                                        value="<?= htmlspecialchars($patient['id']) ?>">حذف</button>
+                            <td data-label="حذف">
+                                <form method="POST" action="" onsubmit="return confirm('هل أنت متأكد أنك تريد حذف هذا المريض؟');">
+                                    <button type="submit" name="delete_patient" value="<?= htmlspecialchars($patient['id']) ?>">
+                                        <i class="fas fa-trash-alt"></i> حذف
+                                    </button>
                                 </form>
                             </td>
                         </tr>
@@ -190,6 +188,7 @@ $patients = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </tbody>
         </table>
     </div>
+    <script src="script/script.js"></script>
 </body>
 
 </html>

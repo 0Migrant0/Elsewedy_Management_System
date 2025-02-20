@@ -4,6 +4,8 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  font-family: "Times New Roman", Times, serif;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -140,7 +142,7 @@ nav {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-nav > div{
+nav > div {
   display: flex;
   gap: 2rem;
 }
@@ -149,6 +151,23 @@ nav > a,
 nav > div > a {
   font-size: 1.5rem;
   font-weight: 500;
+}
+
+nav .menu {
+  width: 100%;
+}
+
+.pdf-btn {
+  margin-right: auto;
+}
+
+nav .menu a:last-child {
+  margin-right: auto;
+}
+
+.menu-toggle {
+  display: none;
+  cursor: pointer;
 }
 
 /******* DashBoard *******/
@@ -295,9 +314,9 @@ td {
 .patiet-details {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 2rem;
+  gap: 1rem;
   background-color: #cccccc9d;
-  padding: 1rem;
+  padding: 0.5rem;
 }
 
 .patient-info {
@@ -335,6 +354,8 @@ td {
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   justify-content: space-between;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .files > div {
@@ -343,13 +364,12 @@ td {
 }
 
 .image-scroll-wrapper {
-  width: 100%; /* Control the width of the wrapper */
-  overflow-x: scroll; /* Allow horizontal scrolling */
+  width: 100%;
+  overflow-x: scroll;
   display: flex;
   gap: 10px;
 }
 
-/* Adjust image container so only 2 images are shown at once */
 .image-container {
   display: flex;
   flex-wrap: nowrap;
@@ -360,11 +380,10 @@ td {
   display: flex;
   gap: 10px;
   flex-shrink: 0;
-  width: 50%; /* This ensures only 2 images are visible at once */
+  width: 50%;
   justify-content: center;
 }
 
-/* If you want the images to be centered inside the container */
 .image-wrapper {
   display: flex;
   justify-content: center;
@@ -384,14 +403,14 @@ td {
 
 /* Modal styles */
 .modal {
-  display: none; /* Hidden by default */
+  display: none;
   position: fixed;
-  z-index: 1; /* Sit on top */
+  z-index: 1;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.7); /* Black with opacity */
+  background-color: rgba(0, 0, 0, 0.7);
   overflow: auto;
   padding-top: 60px;
 }
@@ -444,7 +463,7 @@ td {
 
 .price-form {
   display: grid;
-  grid-template-columns: 1fr 2fr; /* Label takes minimum space, input fills remaining */
+  grid-template-columns: 1fr 2fr;
   gap: 5px 10px;
 }
 
@@ -465,10 +484,97 @@ td {
   width: 100%;
 }
 
+/* Add the following CSS for responsive table */
+@media (max-width: 1100px) {
+  table {
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  thead {
+    display: none;
+  }
+
+  tr {
+    display: inline-block;
+    vertical-align: top;
+  }
+
+  td {
+    display: block;
+    text-align: right;
+    border-bottom: 1px solid #ddd;
+    padding: 0.8rem;
+  }
+
+  td:before {
+    content: attr(data-label);
+    float: left;
+    font-weight: bold;
+    padding: 0 1rem 0 0;
+  }
+}
+
+@media (max-width: 1050px) {
+  .patiet-details {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 950px) {
+  .patient-filter {
+    max-width: 30rem;
+    margin: 0 auto;
+    flex-direction: column;
+  }
+
+  .patient-filter > div {
+    width: 100%;
+    justify-content: space-between;
+    flex-direction: row;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 800px) {
+  .patiet-details {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: block;
+  }
+
+  nav div {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  nav div.active {
+    display: flex;
+  }
+
+  nav a {
+    margin: 10px 0;
+  }
+
+  .pdf-btn {
+    margin-right: 0;
+  }
+
+  nav .menu a:last-child {
+    margin-right: 0;
+  }
+}
+
 /******* Animation *******/
 @keyframes slideDown {
   0% {
-    top: -50px; /* Start position above the screen */
+    top: -50px;
     opacity: 0;
   }
   100% {

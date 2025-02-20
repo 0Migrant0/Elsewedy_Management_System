@@ -13,6 +13,32 @@ require_once '../manegment_system/components/db.php';
 </head>
 
 <body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="#" class="nav-link" id="about-doctor-btn">دكتور محمد أحمد فهمي السويدي</a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Popup Container -->
+    <div class="popup-container" id="popup">
+        <div class="popup-content">
+            <span class="close-btn" id="close-popup">&times;</span>
+            <h2 class="popup-title">دكتور محمد أحمد فهمي السويدي</h2>
+            <!-- <img src="images/about_doctor.png" alt="Dr. Mohamed Ahmed Fawzy" class="doctor-image"> -->
+            <div class="popup-text">
+                <p>استشاري جراحة العظام وعظام الأطفال، يتميز دكتور محمد أحمد فهمي السويدي بخبرته الواسعة في مجال
+                    الجراحة.</p>
+                <p>حصل على بكالوريوس جراحة وطب وجراحة من جامعة الأزهر - أسيوط عام 2002.</p>
+                <p>حاصل على ماجستير جراحة العظام من جامعة عين شمس.</p>
+                <p>حاصل على دبلوم إدارة المستشفيات من أكاديمية السادات للعلوم الإدارية.</p>
+                <p>كما حصل على دبلوم متخصص في جراحة عظام الأطفال من المعهد القومي للحركة.</p>
+            </div>
+        </div>
+    </div>
+
     <div class="aside-handel">
         <div class="book-container">
             <h1 class="appoint-title">حجز موعد</h1>
@@ -100,6 +126,30 @@ require_once '../manegment_system/components/db.php';
     </div>
 
     <script>
+        //navbar//
+        // Select elements
+        const aboutDoctorBtn = document.getElementById('about-doctor-btn');
+        const popup = document.getElementById('popup');
+        const closePopupBtn = document.getElementById('close-popup');
+
+        // Open popup
+        aboutDoctorBtn.addEventListener('click', () => {
+            popup.style.display = 'flex';
+        });
+
+        // Close popup
+        closePopupBtn.addEventListener('click', () => {
+            popup.style.display = 'none';
+        });
+
+        // Close popup if user clicks outside of it
+        window.addEventListener('click', (event) => {
+            if (event.target === popup) {
+                popup.style.display = 'none';
+            }
+        });
+
+        //Days handel//
         const daysInArabic = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
         const daysInEnglish = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
@@ -115,19 +165,28 @@ require_once '../manegment_system/components/db.php';
                 xhr.open("GET", `components/available_days.php?clinic_id=${clinicId}`, true);
                 xhr.onload = function () {
                     if (this.status == 200) {
+
                         const days = JSON.parse(this.responseText);
                         days.forEach(day => {
-                            appointmentDaySelect.innerHTML += `<option value="${day}">${day}</option>`;
+                            const trimmedDay = day.trim(); // Trim the day name
+                            appointmentDaySelect.innerHTML += `<option value="${trimmedDay}">${trimmedDay}</option>`;
                         });
 
                         // اختيار اليوم الأول وتحديث التاريخ تلقائيًا
                         if (days.length > 0) {
-                            appointmentDaySelect.value = days[0];
+                            appointmentDaySelect.value = days[0].trim(); // Trim the first day name
                             updateDateAndFetchSlots(); // تحديث التاريخ حسب اليوم الأول تلقائيًا
                         }
+                    } else {
+                        console.error(`Failed to fetch available days. Status: ${this.status}`);
                     }
                 };
+                xhr.onerror = function () {
+                    console.error('Request error...');
+                };
                 xhr.send();
+            } else {
+                console.error('Clinic ID is missing.');
             }
         }
 
@@ -147,6 +206,7 @@ require_once '../manegment_system/components/db.php';
 
                 if (selectedDayIndex === -1) {
                     appointmentDateField.value = ""; // إذا لم يتم العثور على اليوم
+                    console.error("Selected day not found in both Arabic and English arrays.");
                     return;
                 }
 
@@ -163,6 +223,8 @@ require_once '../manegment_system/components/db.php';
                 appointmentDateField.value = `${year}-${month}-${day}`;
 
                 fetchAvailableSlots();
+            } else {
+                console.error("Selected day or clinic ID is missing.");
             }
         }
 
@@ -182,6 +244,22 @@ require_once '../manegment_system/components/db.php';
                 xhr.send();
             }
         }
+        // Function to validate phone number
+        function validatePhoneNumber(phoneNumber) {
+            const phonePattern = /^0[0-9]{10}$/; // Adjust the pattern to ensure the number starts with 0 and is 11 digits long
+            return phonePattern.test(phoneNumber);
+        }
+
+        // Add event listener to the form submission
+        document.querySelector('.form-con').addEventListener('submit', function (event) {
+            const phoneNumberInput = document.getElementById('phone_number');
+            const phoneNumber = phoneNumberInput.value;
+
+            if (!validatePhoneNumber(phoneNumber)) {
+                alert('يرجى إدخال رقم هاتف صحيح مكون من 11 رقمًا يبدأ بـ 0.');
+                event.preventDefault(); // Prevent form submission
+            }
+        });
     </script>
 </body>
 
