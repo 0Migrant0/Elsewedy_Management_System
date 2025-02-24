@@ -126,6 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <h2>بيانات إضافية</h2>
                 <p><span>التشخيص:</span> <?= htmlspecialchars($patient['diagnosis'] ?? 'لا يوجد تشخيص') ?></p>
                 <p><span>الملاحظات:</span> <?= htmlspecialchars($patient['notes'] ?? 'لا يوجد ملاحظات  ') ?></p>
+                <a href="handle_patient_images.php?id=<?= $patient['id'] ?>" class="btn">Manage Images</a>
             </div>
         </div>
         <div class="files">
