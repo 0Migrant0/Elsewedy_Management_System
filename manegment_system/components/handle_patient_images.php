@@ -2,324 +2,219 @@
 require_once 'auth.php';
 require_once 'db.php';
 
-// الحصول على معرف المريض من سلسلة الاستعلام
-$patient_id = $_GET['id'] ?? null;
-
-if (!$patient_id) {
-    die("معرف المريض غير صالح.");
-}
-
-// جلب تفاصيل المريض
-$stmt = $pdo->prepare("SELECT * FROM patients WHERE id = :id");
-$stmt->execute(['id' => $patient_id]);
-$patient = $stmt->fetch(PDO::FETCH_ASSOC);
-
-if (!$patient) {
-    die("لم يتم العثور على المريض.");
-}
-
-// معالجة تحميل الصورة/الملف
+// Handle file upload
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['image'])) {
-
-    // تعريف دليل التحميل الأساسي
-    $upload_dir = '../uploads/';
-
-    // تحديد العمود بناءً على نوع الصورة
+    $patient_id = $_POST['patient_id'];
     $image_type = $_POST['image_type'] ?? 'other';
-    $column = '';
-    if ($image_type === 'xray') {
-        $column = 'xray_images';
-    } elseif ($image_type === 'test') {
-        $column = 'test_files';
-    } elseif ($image_type === 'prescription') {
-        $column = 'prescriptions';
+
+    // Get patient data
+    $stmt = $pdo->prepare("SELECT * FROM patients WHERE id = ?");
+    $stmt->execute([$patient_id]);
+    $patient = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$patient) {
+        die("Patient not found");
+    }
+
+    // Determine column based on image type
+    $column = match ($image_type) {
+        'xray' => 'xray_images',
+        'test' => 'test_files',
+        'prescription' => 'prescriptions',
+        default => 'file_path'
+    };
+
+    // Create upload directory
+    $upload_dir = __DIR__ . '/../uploads/';
+    $medical_id = $patient['medical_id'] ?? 'default';
+    $date_dir = date('Y-m-d');
+    $target_dir = "{$upload_dir}{$column}/{$date_dir}/{$medical_id}/";
+
+    if (!is_dir($target_dir)) {
+        mkdir($target_dir, 0777, true);
+    }
+
+    // Handle file upload
+    $file_name = uniqid() . '_' . basename($_FILES['image']['name']);
+    $target_file = $target_dir . $file_name;
+
+    if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
+        // Save relative path to database
+        $relative_path = "../uploads/{$column}/{$date_dir}/{$medical_id}/{$file_name}";
+        $existing = json_decode($patient[$column] ?? '[]', true);
+        $existing[] = $relative_path;
+
+        $stmt = $pdo->prepare("UPDATE patients SET {$column} = ? WHERE id = ?");
+        $stmt->execute([json_encode($existing), $patient_id]);
+
+        $_SESSION['message'] = 'File uploaded successfully';
     } else {
-        $column = 'file_path';
+        $_SESSION['error'] = 'File upload failed';
     }
 
-    // التأكد من تضمين دليل medical_id في المسار
-    $current_date = date('Y-m-d'); // الحصول على التاريخ الحالي
-    $medical_id = $patient['medical_id'] ?? 'default'; // استخدام القيمة الافتراضية إذا لم يتم تعيين medical_id
-
-    // إنشاء مسار الدليل بدون تكرار "uploads/"
-    $file_type_dir = $upload_dir . $column . '/' . $current_date . '/' . $medical_id . '/';
-
-    // إنشاء الأدلة بشكل متكرر إذا لم تكن موجودة
-    if (!file_exists($file_type_dir)) {
-        if (!mkdir($file_type_dir, 0777, true) && !is_dir($file_type_dir)) {
-            die("فشل في إنشاء الدليل: $file_type_dir");
-        }
-    }
-
-    // إنشاء اسم ملف فريد ونقل الملف المحمل
-    $file_name = basename($_FILES['image']['name']);
-    $file_path_relative = $column . '/' . $current_date . '/' . $medical_id . '/' . uniqid() . '_' . $file_name; // المسار النسبي لتخزينه في قاعدة البيانات
-    $file_path_full = $upload_dir . $file_path_relative; // المسار الكامل لنظام الملفات
-
-    if (move_uploaded_file($_FILES['image']['tmp_name'], $file_path_full)) {
-
-        // إضافة "../" إلى المسار النسبي قبل تخزينه في قاعدة البيانات
-        $db_file_path = '../uploads/' . $file_path_relative;
-
-        // استرجاع مسارات الملفات الموجودة من قاعدة البيانات
-        $existing_files_str = $patient[$column] ?? '[]'; // الافتراضي إلى مصفوفة JSON فارغة إذا لم تكن هناك ملفات موجودة
-        $existing_files = json_decode($existing_files_str, true); // فك تشفير سلسلة JSON إلى مصفوفة
-
-        // التأكد من أن $existing_files هي مصفوفة
-        if (!is_array($existing_files)) {
-            $existing_files = [];
-        }
-
-        // إضافة مسار الملف الجديد إلى القائمة
-        $existing_files[] = $db_file_path;
-
-        // تحويل مسارات الملفات مرة أخرى إلى سلسلة JSON مشفرة
-        $new_files = json_encode(array_values($existing_files)); // إعادة فهرسة المصفوفة وترميزها كـ JSON
-
-        // تحديث العمود المقابل في قاعدة البيانات
-        try {
-            $stmt = $pdo->prepare("UPDATE patients SET $column = :file_paths WHERE id = :id");
-            if ($stmt->execute(['file_paths' => $new_files, 'id' => $patient_id])) {
-                echo "تم تحديث قاعدة البيانات بنجاح.<br>";
-                $_SESSION['success_message'] = "تم تحميل الصورة/الملف بنجاح.";
-            } else {
-                echo "فشل تحديث قاعدة البيانات: " . $stmt->errorInfo()[2] . "<br>";
-            }
-        } catch (\Exception $e) {
-            echo "خطأ في قاعدة البيانات: " . $e->getMessage() . "<br>";
-        }
-    } else {
-        echo "فشل في نقل الملف المحمل.<br>";
-        $_SESSION['error_message'] = "فشل في تحميل الصورة/الملف.";
-    }
-
-    header("Location: handle_patient_images.php?id=" . $patient_id);
+    header("Location: {$_SERVER['PHP_SELF']}?id={$patient_id}");
     exit;
 }
 
+// Handle file deletion
 if (isset($_GET['delete_image'])) {
-    $image_path = $_GET['delete_image'];
-    $image_type = $_GET['type'];
+    $file_path = $_GET['delete_image'];
+    $patient_id = $_GET['patient_id'];
 
-    // تحديد العمود بناءً على نوع الصورة
-    $column = '';
-    if ($image_type === 'xray') {
-        $column = 'xray_images';
-    } elseif ($image_type === 'test') {
-        $column = 'test_files';
-    } elseif ($image_type === 'prescription') {
-        $column = 'prescriptions';
-    } else {
-        $column = 'file_path';
+    // Convert to absolute path
+    $absolute_path = realpath(__DIR__ . '/../' . $file_path);
+
+    // Remove from filesystem
+    if ($absolute_path && file_exists($absolute_path)) {
+        unlink($absolute_path);
     }
 
-    // إزالة الملف من الخادم
-    if (file_exists($image_path)) {
-        unlink($image_path);
+    // Remove from database
+    $stmt = $pdo->prepare("SELECT * FROM patients WHERE id = ?");
+    $stmt->execute([$patient_id]);
+    $patient = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    foreach (['xray_images', 'test_files', 'prescriptions', 'file_path'] as $col) {
+        $files = json_decode($patient[$col] ?? '[]', true);
+        $files = array_filter($files, fn($f) => $f !== $file_path);
+        $stmt = $pdo->prepare("UPDATE patients SET {$col} = ? WHERE id = ?");
+        $stmt->execute([json_encode(array_values($files)), $patient_id]);
     }
 
-    // إزالة مسار الملف من قاعدة البيانات
-    $existing_files = json_decode($patient[$column], true) ?? [];
-    $existing_files = array_filter($existing_files, function ($file) use ($image_path) {
-        return $file !== $image_path;
-    });
-    $new_files = json_encode(array_values($existing_files)); // إعادة فهرسة المصفوفة
-
-    $stmt = $pdo->prepare("UPDATE patients SET $column = :file_paths WHERE id = :id");
-    $stmt->execute([
-        'file_paths' => $new_files,
-        'id' => $patient_id
-    ]);
-
-    $_SESSION['success_message'] = "تم حذف الصورة/الملف بنجاح.";
-    header("Location: handle_patient_images.php?id=" . $patient_id); // إعادة التوجيه لتحديث الصفحة
+    $_SESSION['message'] = 'File deleted successfully';
+    header("Location: {$_SERVER['PHP_SELF']}?id={$patient_id}");
     exit;
-} ?>
+}
+// Get patient data for display
+if (isset($_GET['id'])) {
+    $stmt = $pdo->prepare("SELECT * FROM patients WHERE id = ?");
+    $stmt->execute([$_GET['id']]);
+    $patient = $stmt->fetch(PDO::FETCH_ASSOC);
+}
+?>
 
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html>
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إدارة صور المريض</title>
+    <title>File Management</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            width: 80%;
-            margin: auto;
-            overflow: hidden;
-        }
-
-        h1,
-        h2,
-        h3 {
-            color: #333;
-        }
-
-        form {
-            background: #fff;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        label {
-            display: block;
-            margin-bottom: 10px;
-            color: #333;
-        }
-
-        input[type="file"],
-        select {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .btn {
+        .image-container {
+            position: relative;
             display: inline-block;
-            padding: 10px 20px;
-            background-color: #f5891e;
+            margin: 15px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .thumbnail {
+            max-width: 200px;
+            height: auto;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #ff4444;
             color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-            transition: background-color 0.3s;
-        }
-
-        .btn:hover {
-            background-color: #c46e18;
-        }
-
-        .file-sections {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .file-section {
-            flex: 1;
-            min-width: 250px;
-            background: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            /* Ensure cursor shows pointer */
+            font-size: 12px;
+            z-index: 10;
+            /* Add this line */
         }
 
         .file-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 20px;
-        }
-
-        .file-item {
-            text-align: center;
-        }
-
-        .file-item img {
-            width: 100%;
-            height: auto;
-            display: block;
-            margin-bottom: 10px;
-            border-radius: 5px;
-        }
-
-        .file-item a {
-            color: #f5891e;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .file-item a:hover {
-            color: #c46e18;
-        }
-
-        .icon {
-            margin-right: 5px;
+            margin-bottom: 30px;
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <h1>إدارة ملفات المريض: <?= htmlspecialchars($patient['name']) ?></h1>
+    <?php if (isset($_SESSION['message'])): ?>
+        <div><?= $_SESSION['message'] ?></div>
+        <?php unset($_SESSION['message']) ?>
+    <?php endif; ?>
 
-        <!-- نموذج التحميل -->
-        <h2>تحميل صورة جديد</h2>
-        <form action="" method="POST" enctype="multipart/form-data">
-            <label for="image">اختصر صورة:</label>
-            <input type="file" name="image" id="image" required><br><br>
+    <?php if (isset($_SESSION['error'])): ?>
+        <div style="color: red"><?= $_SESSION['error'] ?></div>
+        <?php unset($_SESSION['error']) ?>
+    <?php endif; ?>
 
-            <label for="image_type">نوع الملف:</label>
-            <select name="image_type" id="image_type">
-                <option value="xray">صور الأشعة</option>
-                <option value="test">ملفات التحاليل</option>
-                <option value="prescription">الوصفات الطبية</option>
-                <option value="file_path">الملفات</option>
-            </select><br><br>
+    <h1>Manage Patient Files</h1>
 
-            <button type="submit" class="btn"><span class="icon">📤</span>تحميل</button>
-        </form>
+    <form method="post" enctype="multipart/form-data">
+        <input type="hidden" name="patient_id" value="<?= htmlspecialchars($_GET['id'] ?? '') ?>">
 
-        <h2>الملفات الموجودة</h2>
-        <div class="file-sections">
-            <?php
-            $base_url = "/Management_system/manegment_system/uploads/"; // تعريف عنوان URL الأساسي لمجلد التحميلات
-
-            $columns = ['xray_images', 'test_files', 'prescriptions', 'file_path'];
-            foreach ($columns as $column) {
-                // فك تشفير مصفوفة JSON من قاعدة البيانات
-                $files = json_decode($patient[$column], true) ?? [];
-                switch ($column) {
-                    case 'xray_images':
-                        $column_name = 'صور الأشعة';
-                        break;
-                    case 'prescriptions':
-                        $column_name = 'الوصفات الطبية';
-                        break;
-                    case 'test_files':
-                        $column_name = 'ملفات التحاليل';
-                        break;
-                    default:
-                        $column_name = 'الملفات';
-                        break;
-                }
-                echo "<div class='file-section'>";
-                echo "<h3>" . $column_name . "</h3>";
-                if ($files) {
-                    echo "<div class='file-list'>";
-                    foreach ($files as $file) {
-                        // تحويل مسار الملف إلى عنوان URL يمكن الوصول إليه عبر الويب
-                        $web_accessible_path = str_replace('../uploads/', $base_url, $file);
-
-                        echo "<div class='file-item'>";
-                        if (file_exists($_SERVER['DOCUMENT_ROOT'] . $web_accessible_path)) {
-                            echo "<img src='" . htmlspecialchars($web_accessible_path) . "'><br>";
-                        } else {
-                            echo "<p>الملف غير موجود: " . htmlspecialchars($web_accessible_path) . "</p>";
-                        }
-                        echo "<a href='?id=$patient_id&delete_image=" . urlencode($file) . "&type=" . urlencode($column) . "' onclick='return confirm(\"هل أنت متأكد؟\")'><span class='icon'>🗑️</span>حذف</a>";
-                        echo "</div>";
-                    }
-                    echo "</div>";
-                } else {
-                    echo "<p>لايوجد صورٌ في $column_name.</p>";
-                }
-                echo "</div>";
-            }
-            ?>
+        <div>
+            <label>File:</label>
+            <input type="file" name="image" required>
         </div>
-    </div>
+
+        <div>
+            <label>Type:</label>
+            <select name="image_type">
+                <option value="xray">X-Ray</option>
+                <option value="test">Test Files</option>
+                <option value="prescription">Prescriptions</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+
+        <button type="submit">Upload</button>
+    </form>
+
+    <?php if (isset($patient)): ?>
+        <h2>Files for Patient: <?= htmlspecialchars($patient['name'] ?? 'N/A') ?></h2>
+
+        <?php foreach (['xray_images', 'test_files', 'prescriptions', 'file_path'] as $column): ?>
+            <?php
+            $files = json_decode($patient[$column] ?? '[]', true);
+            $file_type = substr($column, 0, strpos($column, '_')); // Get type from column name
+            ?>
+
+            <?php if (!empty($files)): ?>
+                <div class="file-list">
+                    <h3><?= ucfirst(str_replace('_', ' ', $column)) ?></h3>
+
+                    <?php foreach ($files as $file): ?>
+                        <?php
+                        $base_url = '../uploads/';
+                        $web_path = str_replace('../uploads/', $base_url, $file);
+                        $file_type = explode('/', $file)[0]; // Get type from directory structure
+                        ?>
+
+                        <div class="image-container">
+                            <?php if (strpos(mime_content_type($file), 'image') === 0): ?>
+                                <img src="<?= $web_path ?>" alt="Patient File" class="thumbnail">
+                            <?php else: ?>
+                                <a href="<?= $web_path ?>" target="_blank" class="thumbnail">
+                                    <?= htmlspecialchars(basename($file)) ?>
+                                </a>
+                            <?php endif; ?>
+
+                            <button class="delete-btn" onclick="confirmDelete('<?= $file ?>', '<?= $file_type ?>')">Delete</button>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        <?php endforeach; ?>
+    <?php endif; ?>
+
+    <script>
+        function confirmDelete(filePath, fileType) {
+            if (confirm('Are you sure?')) {
+                window.location.href = `?delete_image=${encodeURIComponent(filePath)}&patient_id=<?= $_GET['id'] ?>`;
+            }
+        }
+    </script>
 </body>
 
 </html>
