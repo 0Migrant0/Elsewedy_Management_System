@@ -1,6 +1,7 @@
 <?php
 require_once '../manegment_system/components/auth.php';
 ?>
+
 <!DOCTYPE html>
 <html lang="ar">
 
@@ -16,7 +17,7 @@ require_once '../manegment_system/components/auth.php';
 
     <header>
         <nav>
-        <div class="menu-toggle" onclick="toggleMenu()">
+            <div class="menu-toggle" onclick="toggleMenu()">
                 <i class="fas fa-bars"></i>
             </div>
             <div class="menu">
@@ -24,7 +25,7 @@ require_once '../manegment_system/components/auth.php';
                 <a href="../manegment_system\components/add_patient.php"><i class="fas fa-user-plus"></i> إضافة
                     مريض</a>
                 <a href="dashboard.php"><i class="fas fa-calendar-alt"></i> الحجوزات</a>
-                <a href="index.php"><i class="fas fa-calendar-check"></i> حجز موعد</a>
+                <a href="../index.php"><i class="fas fa-calendar-check"></i> حجز موعد</a>
                 <a href="logout.php"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
             </div>
         </nav>
