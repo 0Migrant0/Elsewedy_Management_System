@@ -93,14 +93,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <header>
         <nav>
-        <div class="menu-toggle" onclick="toggleMenu()">
+            <div class="menu-toggle" onclick="toggleMenu()">
                 <i class="fas fa-bars"></i>
             </div>
             <div class="menu">
                 <a href="../index.php"><i class="fas fa-home"></i> الرئيسية</a>
                 <a href="add_patient.php"><i class="fas fa-user-plus"></i> إضافة مريض</a>
                 <a href="../../booking_system/dashboard.php"><i class="fas fa-calendar-alt"></i> الحجوزات</a>
-                <a href="../../booking_system/index.php"><i class="fas fa-calendar-check"></i> حجز موعد</a>
+                <a href="../../index.php"><i class="fas fa-calendar-check"></i> حجز موعد</a>
                 <a href="generate_pdf.php?id=<?= htmlspecialchars($patient['id']) ?>" class="btn btn-primary pdf-btn">
                     <i class="fas fa-file-pdf"></i> تحميل PDF
                 </a>
@@ -126,7 +126,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <h2>بيانات إضافية</h2>
                 <p><span>التشخيص:</span> <?= htmlspecialchars($patient['diagnosis'] ?? 'لا يوجد تشخيص') ?></p>
                 <p><span>الملاحظات:</span> <?= htmlspecialchars($patient['notes'] ?? 'لا يوجد ملاحظات  ') ?></p>
-                <a href="handle_patient_images.php?id=<?= $patient['id'] ?>" class="btn">Manage Images</a>
+                <a href="handle_patient_images.php?id=<?= $patient['id'] ?>"
+                    class="btnm gradient-btn hover-shadow ripple-animation rounded-corners hover-color transition-effect">
+                    Manage Images
+                </a>
             </div>
         </div>
         <div class="files">

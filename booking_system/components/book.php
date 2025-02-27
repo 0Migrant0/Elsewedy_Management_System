@@ -32,9 +32,9 @@ if (count($result) > 0) {
     $stmt->bindValue(4, $phone_number);
 
     if ($stmt->execute()) {
-        echo "<script>alert('تم حجز الموعد بنجاح.'); window.location.href = '../index.php';</script>";
+        echo "<script>alert('تم حجز الموعد بنجاح.'); window.location.href = '../../index.php';</script>";
     } else {
-        echo "<script>alert('حدث خطأ أثناء حجز الموعد.'); window.location.href = '../index.php';</script>";
+        echo "<script>alert('حدث خطأ أثناء حجز الموعد.'); window.location.href = '../../index.php';</script>";
     }
 }
 $stmt = null;
