@@ -19,6 +19,9 @@ require_once 'manegment_system/components/db.php';
             <li class="nav-item">
                 <a href="#" class="nav-link" id="about-doctor-btn">دكتور محمد أحمد فهمي السويدي</a>
             </li>
+            <li class="nav-item">
+                <a href="ticket.html" class="nav-link">مواعيدي</a>
+            </li>
         </ul>
     </nav>
 
