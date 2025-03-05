@@ -97,7 +97,7 @@ if (isset($_GET['id'])) {
 <html>
 
 <head>
-    <title>File Management</title>
+    <title>إدارة الملفات</title>
     <link rel="stylesheet" href="../styles/style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -399,33 +399,33 @@ if (isset($_GET['id'])) {
             <?php unset($_SESSION['error']) ?>
         <?php endif; ?>
 
-        <h1>Manage Patient Files</h1>
+        <h1>إدارة ملفات المرضى</h1>
 
         <div class="upload-form">
             <form method="post" enctype="multipart/form-data">
                 <input type="hidden" name="patient_id" value="<?= htmlspecialchars($_GET['id'] ?? '') ?>">
 
                 <div class="form-group">
-                    <label>File:</label>
+                    <label>ملف:</label>
                     <input type="file" name="image" class="form-control" required>
                 </div>
 
                 <div class="form-group">
-                    <label>Type:</label>
+                    <label>نوع الملف:</label>
                     <select name="image_type" class="form-control">
-                        <option value="xray">X-Ray</option>
-                        <option value="test">Test Files</option>
-                        <option value="prescription">Prescriptions</option>
-                        <option value="other">Other</option>
+                        <option value="xray">أشعة</option>
+                        <option value="test"> التحليل</option>
+                        <option value="prescription">وصفات طبية</option>
+                        <option value="other">ملفات</option>
                     </select>
                 </div>
 
-                <button type="submit" class="btn">Upload File</button>
+                <button type="submit" class="btn">رفع الملف</button>
             </form>
         </div>
 
         <?php if (isset($patient)): ?>
-            <h2 class="mt-4">Files for: <?= htmlspecialchars($patient['name'] ?? 'N/A') ?></h2>
+            <h2 class="mt-4">الملفات الخاصة بـ: <?= htmlspecialchars($patient['name'] ?? 'N/A') ?></h2>
 
             <div class="file-list">
                 <?php foreach (['xray_images', 'test_files', 'prescriptions', 'file_path'] as $column): ?>
@@ -441,7 +441,7 @@ if (isset($_GET['id'])) {
                         $is_image = in_array(strtolower($file_extension), ['jpg', 'jpeg', 'png', 'gif']);
                         ?>
                         <div class="file-item">
-                            <button class="delete-btn" onclick="confirmDelete('<?= $file ?>', event)">Delete</button>
+                            <button class="delete-btn" onclick="confirmDelete('<?= $file ?>', event)">حذف</button>
 
                             <?php if ($is_image): ?>
                                 <img src="<?= $web_path ?>" alt="File" class="file-thumbnail">
@@ -464,7 +464,7 @@ if (isset($_GET['id'])) {
     <script>
         function confirmDelete(filePath, event) {
             event.stopPropagation();
-            if (confirm('Are you sure you want to delete this file?')) {
+            if (confirm('هل أنت متأكد أنك تريد حذف هذا الملف؟')) {
                 window.location.href = `?delete_image=${encodeURIComponent(filePath)}&patient_id=<?= $_GET['id'] ?? '' ?>`;
             }
         }

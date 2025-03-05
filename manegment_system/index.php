@@ -141,7 +141,7 @@ $patients = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <th>شركة التعاقد</th>
                     <th>التخصص الدقيق</th>
                     <th>التاريخ</th>
-                    <th>تعديل</th>
+                    <th>عرض</th>
                     <th>حذف</th>
                 </tr>
             </thead>
