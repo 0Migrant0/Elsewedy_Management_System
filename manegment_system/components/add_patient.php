@@ -188,8 +188,19 @@ try {
             </div>
             <div>
                 <label for="medical_id">الرقم المرضي:</label>
-                <input type="text" id="medical_id" name="medical_id" required>
+                <input type="text" id="medical_id" name="medical_id" required oninput="convertToEnglishDigits(this)">
             </div>
+
+            <script>
+                function convertToEnglishDigits(input) {
+                    // خريطة للأرقام العربية والفارسية إلى الإنجليزية
+                    const arabicDigits = /[\u0660-\u0669]/g; // ٠١٢٣٤٥٦٧٨٩
+                    const persianDigits = /[\u06F0-\u06F9]/g; // ۰۱۲۳۴۵۶۷۸۹
+
+                    input.value = input.value.replace(arabicDigits, d => String.fromCharCode(d.charCodeAt(0) - 0x0630))
+                                            .replace(persianDigits, d => String.fromCharCode(d.charCodeAt(0) - 0x06F0));
+                }
+            </script>
             <div>
                 <label for="phone">رقم الهاتف:</label>
                 <input type="text" id="phone" name="phone" required>

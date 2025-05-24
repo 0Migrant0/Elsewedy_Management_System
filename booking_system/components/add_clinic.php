@@ -2,6 +2,36 @@
 require_once '../../manegment_system/components/auth.php';
 require_once '../../manegment_system/components/db.php';
 
+// --- START: Handling clinic deletion ---
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id']) && isset($_POST['action']) && $_POST['action'] === 'delete') {
+    $clinic_id = $_POST['id'];
+
+    try {
+        // Begin transaction
+        $pdo->beginTransaction();
+
+        // أولًا: حذف الحجوزات المرتبطة بهذه العيادة
+        $stmt = $pdo->prepare("DELETE FROM appointments WHERE clinic_id = ?");
+        $stmt->execute([$clinic_id]);
+
+        // ثانيًا: حذف العيادة نفسها
+        $stmt = $pdo->prepare("DELETE FROM clinics WHERE id = ?");
+        $stmt->execute([$clinic_id]);
+
+        // إنهاء العملية بنجاح
+        $pdo->commit();
+
+        // إعادة توجيه المستخدم بعد الحذف
+        header("Location: add_clinic.php");
+        exit();
+    } catch (PDOException $e) {
+        $pdo->rollBack(); // التراجع إذا حدث خطأ
+        echo "<script>alert('حدث خطأ أثناء محاولة الحذف: " . addslashes($e->getMessage()) . "'); window.history.back();</script>";
+        exit();
+    }
+}
+// --- END: Handling clinic deletion ---
+
 try {
     // Handle AJAX request to fetch governorates and cities
     if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_data'])) {
@@ -159,12 +189,13 @@ try {
                                 <td>
                                     <div class="actions_handler">
                                         <button class="btn-edit">تعديل</button>
-                                        <form action="delete_clinic.php" method="POST" style="display:inline;">
-                                            <input type="hidden" name="id" value="<?= $clinic['id'] ?>">
-                                            <button type="submit" class="btn-delete"
-                                                onclick="return confirm('هل أنت متأكد من حذف هذه العيادة؟');"><i
-                                                    class="fas fa-trash-alt"></i></button>
-                                        </form>
+                                        <form action="add_clinic.php" method="POST" style="display:inline;">
+    <input type="hidden" name="id" value="<?= $clinic['id'] ?>">
+    <input type="hidden" name="action" value="delete">
+    <button type="submit" class="btn-delete"
+        onclick="return confirm('هل أنت متأكد من حذف هذه العيادة؟');"><i
+            class="fas fa-trash-alt"></i></button>
+</form>
                                     </div>
                                 </td>
                             </tr>
