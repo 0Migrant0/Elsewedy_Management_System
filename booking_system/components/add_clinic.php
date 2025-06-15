@@ -1,6 +1,20 @@
 <?php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 require_once '../../manegment_system/components/auth.php';
 require_once '../../manegment_system/components/db.php';
+
+// session_start();
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    header('Location: login.php');
+    exit;
+}
+
+// إذا كنت تريد أن تكون الصفحة متاحة للأدمن فقط
+if ($_SESSION['admin_role'] !== 'admin') {
+    die('ليس لديك صلاحية الوصول لهذه الصفحة.');
+}
 
 // --- START: Handling clinic deletion ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id']) && isset($_POST['action']) && $_POST['action'] === 'delete') {
@@ -145,7 +159,7 @@ try {
                     مريض</a>
                 <a href="../dashboard.php"><i class="fas fa-calendar-alt"></i> الحجوزات</a>
                 <a href="../../index.php"><i class="fas fa-calendar-check"></i> حجز موعد</a>
-                <a href="components/logout.php"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
+                <a href="../../manegment_system/components/logout.php"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
             </div>
         </nav>
     </header>

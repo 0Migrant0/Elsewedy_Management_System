@@ -1,4 +1,5 @@
 <?php
+
 require_once 'components/auth.php';
 require_once 'components/db.php';
 

@@ -137,7 +137,7 @@ try {
                 <a href="add_patient.php"><i class="fas fa-user-plus"></i> إضافة مريض</a>
                 <a href="../../booking_system/dashboard.php"><i class="fas fa-calendar-alt"></i> الحجوزات</a>
                 <a href="../../index.php"><i class="fas fa-calendar-check"></i> حجز موعد</a>
-                <a href="components/logout.php"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
+                <a href="../components/logout.php"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
             </div>
         </nav>
     </header>

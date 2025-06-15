@@ -1,6 +1,17 @@
 <?php
+// التأكد من بدء الجلسة فقط إذا لم تكن نشطة بالفعل
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
 require_once 'auth.php';
 require_once 'db.php';
+
+// التأكد من تسجيل الدخول
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    header('Location: login.php');
+    exit;
+}
 
 // الحصول على معرف المريض
 $patient_id = $_GET['id'] ?? null;
@@ -17,26 +28,20 @@ if (!$patient) {
     die("لا توجد بيانات للمريض.");
 }
 
-// معالجة النموذج لتحديث البيانات والأسعار
+// معالجة تحديث الأسعار (متاح للجميع)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $consultation_price = $_POST['consultation_price'] ?? 0;
     $consultation_notes = $_POST['consultation_notes'] ?? '';
-
     $injection_price = $_POST['injection_price'] ?? 0;
     $injection_notes = $_POST['injection_notes'] ?? '';
-
     $medicine_price = $_POST['medicine_price'] ?? 0;
     $medicine_notes = $_POST['medicine_notes'] ?? '';
-
     $xray_price = $_POST['xray_price'] ?? 0;
     $xray_notes = $_POST['xray_notes'] ?? '';
-
     $test_price = $_POST['test_price'] ?? 0;
     $test_notes = $_POST['test_notes'] ?? '';
-
     $prescription_price = $_POST['prescription_price'] ?? 0;
     $prescription_notes = $_POST['prescription_notes'] ?? '';
-
     $total_price = $consultation_price + $injection_price + $medicine_price + $xray_price + $test_price + $prescription_price;
 
     $stmt = $pdo->prepare("
@@ -73,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'id' => $patient_id
     ]);
 
-    $_SESSION['success_message'] = "تم تحديث البيانات بنجاح.";
+    $_SESSION['success_message'] = "تم تحديث الأسعار بنجاح.";
     header("Location: view_patient.php?id=" . $patient_id);
     exit;
 }
@@ -81,15 +86,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!DOCTYPE html>
 <html lang="ar">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../styles/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> 
     <title>عرض المريض</title>
 </head>
-
 <body>
     <header>
         <nav>
@@ -101,10 +104,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <a href="add_patient.php"><i class="fas fa-user-plus"></i> إضافة مريض</a>
                 <a href="../../booking_system/dashboard.php"><i class="fas fa-calendar-alt"></i> الحجوزات</a>
                 <a href="../../index.php"><i class="fas fa-calendar-check"></i> حجز موعد</a>
+
                 <a href="generate_pdf.php?id=<?= htmlspecialchars($patient['id']) ?>" class="btn btn-primary pdf-btn">
                     <i class="fas fa-file-pdf"></i> تحميل PDF
                 </a>
-                <a href="components/logout.php"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
+
+                <!-- زر التعديل - يظهر فقط للأدمن -->
+                <?php if ($_SESSION['admin_role'] === 'admin'): ?>
+                    <a href="edit_patient.php?id=<?= htmlspecialchars($patient['id']) ?>" class="btn btn-edit">
+                        <i class="fas fa-edit"></i> تعديل البيانات
+                    </a>
+                <?php endif; ?>
+
+                <a href="../components/logout.php"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
             </div>
         </nav>
     </header>
@@ -120,25 +132,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <p>التخصص الدقيق: <?= htmlspecialchars($patient['specialization'] ?? 'غير محدد') ?></p>
                 <p>الحالة: <?= htmlspecialchars($patient['status']) ?></p>
                 <p>التعاقد: <?= htmlspecialchars($patient['contract'] ?? 'لا يوجد تعاقد') ?></p>
-
             </div>
             <div>
                 <h2>بيانات إضافية</h2>
                 <p><span>التشخيص:</span> <?= htmlspecialchars($patient['diagnosis'] ?? 'لا يوجد تشخيص') ?></p>
-                <p><span>الملاحظات:</span> <?= htmlspecialchars($patient['notes'] ?? 'لا يوجد ملاحظات  ') ?></p>
+                <p><span>الملاحظات:</span> <?= htmlspecialchars($patient['notes'] ?? 'لا يوجد ملاحظات') ?></p>
                 <a href="handle_patient_images.php?id=<?= $patient['id'] ?>"
                     class="btnm gradient-btn hover-shadow ripple-animation rounded-corners hover-color transition-effect">
-                    Manage Images
+                    إدارة الصور
                 </a>
             </div>
         </div>
+
         <div class="files">
+            <!-- عرض صور الأشعة -->
             <div>
                 <h2>صور الأشعة:</h2>
                 <div class="image-scroll-wrapper">
                     <div class="image-container">
                         <?php
-                        // عرض صور الأشعة
                         if (!empty($patient['xray_images'])):
                             $xray_images = json_decode($patient['xray_images'], true) ?? [];
                             foreach ($xray_images as $image): ?>
@@ -152,6 +164,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 </div>
             </div>
+
+            <!-- ملفات التحاليل -->
             <div>
                 <h2>ملفات التحاليل:</h2>
                 <div class="image-scroll-wrapper">
@@ -170,6 +184,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 </div>
             </div>
+
+            <!-- الوصفات الطبية -->
             <div>
                 <h2>الوصفات الطبية:</h2>
                 <div class="image-scroll-wrapper">
@@ -188,16 +204,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 </div>
             </div>
+
+            <!-- الملفات الأخرى -->
             <div>
-                <h2> الملفات:</h2>
+                <h2>الملفات:</h2>
                 <div class="image-scroll-wrapper">
                     <div class="image-container">
                         <?php
                         if (!empty($patient['file_path'])):
-                            $prescriptions = json_decode($patient['file_path'], true) ?? [];
-                            foreach ($prescriptions as $prescription): ?>
+                            $files = json_decode($patient['file_path'], true) ?? [];
+                            foreach ($files as $file): ?>
                                 <div class="image-wrapper">
-                                    <img src="<?= htmlspecialchars($prescription) ?>" alt=" الملفات" class="popup-image">
+                                    <img src="<?= htmlspecialchars($file) ?>" alt="ملف إضافي" class="popup-image">
                                 </div>
                             <?php endforeach;
                         else: ?>
@@ -208,72 +226,83 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
 
-        <!-- Popup Modal -->
+        <!-- نافذة عرض الصورة الكبيرة -->
         <div id="imageModal" class="modal">
             <span class="close">&times;</span>
             <img class="modal-content" id="modalImage">
         </div>
 
+        <!-- تفاصيل التكلفة -->
         <div class="price-details">
             <h2>تفاصيل التكلفة</h2>
             <?php if (isset($_SESSION['success_message'])): ?>
-                <p><?= $_SESSION['success_message'] ?></p>
+                <p style="color: green;"><?= $_SESSION['success_message'] ?></p>
                 <?php unset($_SESSION['success_message']); ?>
             <?php endif; ?>
 
-
             <form method="POST" action="" class="price-form">
-
-                <!-- عرض بيانات الأسعار -->
-                <label for="consultation_price">سعر الاستشارة:</label>
+                <!-- سعر الكشف -->
+                <label for="consultation_price">سعر الكشف:</label>
                 <input type="number" id="consultation_price" name="consultation_price" step="0.01"
                     value="<?= htmlspecialchars($patient['consultation_price'] ?? 0) ?>">
-                <label for="consultation_notes">تفاصيل الاستشارة:</label>
+
+                <label for="consultation_notes">تفاصيل الكشف:</label>
                 <input type="text" id="consultation_notes" name="consultation_notes"
                     value="<?= htmlspecialchars($patient['consultation_notes'] ?? '') ?>">
 
-                <label for="injection_price">سعر الحقن:</label>
+                <!-- سعر الإجراء -->
+                <label for="injection_price">سعر الإجراء:</label>
                 <input type="number" id="injection_price" name="injection_price" step="0.01"
                     value="<?= htmlspecialchars($patient['injection_price'] ?? 0) ?>">
-                <label for="injection_notes">تفاصيل الحقن:</label>
+
+                <label for="injection_notes">تفاصيل الإجراء:</label>
                 <input type="text" id="injection_notes" name="injection_notes"
                     value="<?= htmlspecialchars($patient['injection_notes'] ?? '') ?>">
 
+                <!-- سعر المستلزمات -->
                 <label for="medicine_price">سعر المستلزمات:</label>
                 <input type="number" id="medicine_price" name="medicine_price" step="0.01"
                     value="<?= htmlspecialchars($patient['medicine_price'] ?? 0) ?>">
+
                 <label for="medicine_notes">تفاصيل المستلزمات:</label>
                 <input type="text" id="medicine_notes" name="medicine_notes"
                     value="<?= htmlspecialchars($patient['medicine_notes'] ?? '') ?>">
 
-                <label for="xray_price">سعر صورة الأشعة:</label>
+                <!-- سعر الأشعة -->
+                <label for="xray_price">سعر الأشعة:</label>
                 <input type="number" id="xray_price" name="xray_price" step="0.01"
                     value="<?= htmlspecialchars($patient['xray_price'] ?? 0) ?>">
+
                 <label for="xray_notes">تفاصيل الأشعة:</label>
                 <input type="text" id="xray_notes" name="xray_notes"
                     value="<?= htmlspecialchars($patient['xray_notes'] ?? '') ?>">
 
-                <label for="test_price">سعر الفحوصات:</label>
+                <!-- سعر التحاليل -->
+                <label for="test_price">سعر التحاليل:</label>
                 <input type="number" id="test_price" name="test_price" step="0.01"
                     value="<?= htmlspecialchars($patient['test_price'] ?? 0) ?>">
-                <label for="test_notes">تفاصيل الفحوصات:</label>
+
+                <label for="test_notes">تفاصيل التحاليل:</label>
                 <input type="text" id="test_notes" name="test_notes"
                     value="<?= htmlspecialchars($patient['test_notes'] ?? '') ?>">
 
-                <label for="prescription_price">سعر الروشتة:</label>
+                <!-- سعر العلاج -->
+                <label for="prescription_price">سعر العلاج:</label>
                 <input type="number" id="prescription_price" name="prescription_price" step="0.01"
                     value="<?= htmlspecialchars($patient['prescription_price'] ?? 0) ?>">
-                <label for="prescription_notes">تفاصيل الروشتة:</label>
+
+                <label for="prescription_notes">تفاصيل العلاج:</label>
                 <input type="text" id="prescription_notes" name="prescription_notes"
                     value="<?= htmlspecialchars($patient['prescription_notes'] ?? '') ?>">
 
                 <button type="submit">حفظ التحديثات</button>
             </form>
 
-            <h3>إجمالي التكلفة: <?= htmlspecialchars($patient['total_price'] ?? 0) ?> جنيه</d>
-                </p>
+            <h3>إجمالي التكلفة: <?= htmlspecialchars($patient['total_price'] ?? 0) ?> جنيه</h3>
         </div>
-        <script src="../script/script.js"></script>
-</body>
+    </div>
 
+    <!-- JavaScript -->
+    <script src="../script/script.js"></script>
+</body>
 </html>

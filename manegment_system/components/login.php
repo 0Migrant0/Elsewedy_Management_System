@@ -1,56 +1,50 @@
 <?php
-require_once 'db.php'; // Include your database configuration file
+require_once 'db.php';
 
-// Redirect to index.php if already logged in
+// Redirect if already logged in
 if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
     header('Location: ../index.php');
     exit;
 }
 
-// Handle login form submission
+$error = '';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Sanitize inputs
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
     $password = $_POST['password'];
 
     try {
-        // Prepare and execute
-        $stmt = $pdo->prepare("SELECT password FROM users WHERE email = :email");
-        $stmt->bindParam(':email', $email);
-        $stmt->execute();
+        // استرداد المستخدم مع الدور
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email");
+        $stmt->execute(['email' => $email]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($stmt->rowCount() > 0) {
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $hashed_password = $row['password'];
+        if ($user && password_verify($password, $user['password'])) {
+            session_regenerate_id(true);
 
-            // Validate login credentials
-            if (password_verify($password, $hashed_password)) {
-                // Regenerate session ID to prevent session fixation
-                session_regenerate_id(true);
-                $_SESSION['admin_logged_in'] = true;
-                $_SESSION['admin_email'] = $email; // Save additional session data if needed
-                header('Location: ../index.php');
-                exit;
-            }
+            $_SESSION['admin_logged_in'] = true;
+            $_SESSION['admin_email'] = $user['email'];
+            $_SESSION['admin_role'] = $user['role']; // تخزين الدور
+
+            header('Location: ../index.php');
+            exit;
         }
-        // Generic error message to prevent user enumeration
-        $error = "البريد الإلكتروني أو كلمة المرور غير صحيحة!";
+
+        // رسالة خطأ عامة لمنع التسريب
+        $error = "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
     } catch (PDOException $e) {
         die("Connection failed: " . $e->getMessage());
     }
 }
 ?>
-
 <!DOCTYPE html>
-<html lang="ar">
-
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تسجيل الدخول</title>
     <link rel="stylesheet" href="../styles/style.css">
 </head>
-
 <body>
     <div class="login_container">
         <h2>تسجيل الدخول</h2>
@@ -66,10 +60,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <button type="submit">دخول</button>
         </form>
-    </div>
-    <?php if (isset($error)): ?>
-        <p style="color: red;"><?php echo htmlspecialchars($error); ?></p>
-    <?php endif; ?>
-</body>
 
+        <?php if (!empty($error)): ?>
+            <p style="color: red;"><?= htmlspecialchars($error) ?></p>
+        <?php endif; ?>
+    </div>
+</body>
 </html>
