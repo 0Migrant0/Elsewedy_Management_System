@@ -126,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div>
                 <h2>تفاصيل المريض</h2>
                 <p>الاسم: <?= htmlspecialchars($patient['name']) ?></p>
-                <p>رقم المريض: <?= htmlspecialchars($patient['medical_id']) ?></p>
+                <p>الرقم القومي: <?= htmlspecialchars($patient['medical_id']) ?></p>
                 <p>رقم الهاتف: <?= htmlspecialchars($patient['phone']) ?></p>
                 <p>العيادة: <?= htmlspecialchars($patient['clinic_name'] ?? 'غير محدد') ?></p>
                 <p>التخصص الدقيق: <?= htmlspecialchars($patient['specialization'] ?? 'غير محدد') ?></p>
