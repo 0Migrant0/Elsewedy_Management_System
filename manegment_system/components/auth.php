@@ -1,21 +1,16 @@
 <?php
-// Set secure session cookie parameters
-ini_set('session.cookie_httponly', 1);
-if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
-    ini_set('session.cookie_secure', 1);
+// auth.php - متاح للموظف والأدمن
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
 }
 
-session_start();
-
-// Regenerate session ID to prevent session fixation
-if (!isset($_SESSION['initiated'])) {
-    session_regenerate_id(true);
-    $_SESSION['initiated'] = true;
-}
-
-// Check if user is authenticated
 if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
-    header("Location: ../../Management_system\manegment_system\components\login.php");
-    exit();
+    header("Location: login.php");
+    exit;
+}
+
+$allowed_roles = ['admin', 'employee'];
+if (!isset($_SESSION['admin_role']) || !in_array($_SESSION['admin_role'], $allowed_roles)) {
+    die("ليس لديك صلاحية الوصول لهذه الصفحة.");
 }
 ?>

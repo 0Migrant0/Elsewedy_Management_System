@@ -1,6 +1,50 @@
 <?php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 require_once '../../manegment_system/components/auth.php';
 require_once '../../manegment_system/components/db.php';
+
+// session_start();
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    header('Location: login.php');
+    exit;
+}
+
+// إذا كنت تريد أن تكون الصفحة متاحة للأدمن فقط
+if ($_SESSION['admin_role'] !== 'admin') {
+    die('ليس لديك صلاحية الوصول لهذه الصفحة.');
+}
+
+// --- START: Handling clinic deletion ---
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id']) && isset($_POST['action']) && $_POST['action'] === 'delete') {
+    $clinic_id = $_POST['id'];
+
+    try {
+        // Begin transaction
+        $pdo->beginTransaction();
+
+        // أولًا: حذف الحجوزات المرتبطة بهذه العيادة
+        $stmt = $pdo->prepare("DELETE FROM appointments WHERE clinic_id = ?");
+        $stmt->execute([$clinic_id]);
+
+        // ثانيًا: حذف العيادة نفسها
+        $stmt = $pdo->prepare("DELETE FROM clinics WHERE id = ?");
+        $stmt->execute([$clinic_id]);
+
+        // إنهاء العملية بنجاح
+        $pdo->commit();
+
+        // إعادة توجيه المستخدم بعد الحذف
+        header("Location: add_clinic.php");
+        exit();
+    } catch (PDOException $e) {
+        $pdo->rollBack(); // التراجع إذا حدث خطأ
+        echo "<script>alert('حدث خطأ أثناء محاولة الحذف: " . addslashes($e->getMessage()) . "'); window.history.back();</script>";
+        exit();
+    }
+}
+// --- END: Handling clinic deletion ---
 
 try {
     // Handle AJAX request to fetch governorates and cities
@@ -115,7 +159,7 @@ try {
                     مريض</a>
                 <a href="../dashboard.php"><i class="fas fa-calendar-alt"></i> الحجوزات</a>
                 <a href="../../index.php"><i class="fas fa-calendar-check"></i> حجز موعد</a>
-                <a href="components/logout.php"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
+                <a href="../../manegment_system/components/logout.php"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
             </div>
         </nav>
     </header>
@@ -159,12 +203,13 @@ try {
                                 <td>
                                     <div class="actions_handler">
                                         <button class="btn-edit">تعديل</button>
-                                        <form action="delete_clinic.php" method="POST" style="display:inline;">
-                                            <input type="hidden" name="id" value="<?= $clinic['id'] ?>">
-                                            <button type="submit" class="btn-delete"
-                                                onclick="return confirm('هل أنت متأكد من حذف هذه العيادة؟');"><i
-                                                    class="fas fa-trash-alt"></i></button>
-                                        </form>
+                                        <form action="add_clinic.php" method="POST" style="display:inline;">
+    <input type="hidden" name="id" value="<?= $clinic['id'] ?>">
+    <input type="hidden" name="action" value="delete">
+    <button type="submit" class="btn-delete"
+        onclick="return confirm('هل أنت متأكد من حذف هذه العيادة؟');"><i
+            class="fas fa-trash-alt"></i></button>
+</form>
                                     </div>
                                 </td>
                             </tr>

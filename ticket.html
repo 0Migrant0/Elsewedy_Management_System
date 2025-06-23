@@ -170,60 +170,73 @@
       <div class="loading-spinner"></div>
     </div>
 
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const ticketsContainer = document.getElementById("tickets");
+   <script>
+document.addEventListener("DOMContentLoaded", () => {
+    const ticketsContainer = document.getElementById("tickets");
 
-        // Show loading spinner
-        ticketsContainer.innerHTML = `
-                    <div class="loading-spinner"></div>
+    // Show loading spinner
+    ticketsContainer.innerHTML = `
+        <div class="loading-spinner"></div>
+    `;
+
+    // Fetch appointments from server
+    fetch('manegment_system/fetch_appointments.php') // تأكد من المسار
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('فشل في تحميل البيانات');
+            }
+            return response.json();
+        })
+        .then(appointments => {
+            const now = new Date();
+
+            // Filter future appointments only
+            const validApps = appointments.filter(app => new Date(app.appointment_datetime) > now);
+
+            if (validApps.length > 0) {
+                ticketsContainer.innerHTML = validApps
+                    .map(app => `
+                        <div class="ticket-card">
+                            <div class="ticket-header">
+                                <div class="clinic-name">${app.clinic_name}</div>
+                                <div class="status-badge">${app.status || 'قيد الانتظار'}</div>
+                            </div>
+                            <div class="ticket-details">
+                                <p><strong>المريض:</strong> ${app.client_name || 'غير محدد'}</p>
+                                <p><strong>التاريخ:</strong> ${new Date(app.appointment_datetime).toLocaleDateString()}</p>
+                                <p><strong>الوقت:</strong> ${new Date(app.appointment_datetime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                                <p><strong>الهاتف:</strong> ${app.phone_number || '-'}</p>
+                            </div>
+                        </div>
+                    `)
+                    .join("");
+            } else {
+                ticketsContainer.innerHTML = `
+                    <div class="no-tickets">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48">
+                            <path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-11h2v2h-2zm0 4h2v6h-2z"/>
+                        </svg>
+                        <p>لا توجد مواعيد صالحة</p>
+                    </div>
                 `;
+            }
 
-        setTimeout(() => {
-          const now = new Date();
-          const appointments =
-            JSON.parse(localStorage.getItem("appointments")) || [];
-          const validApps = appointments.filter(
-            (app) => new Date(app.datetime) > now
-          );
+            // Add fade-in animation
+            setTimeout(() => {
+                ticketsContainer.style.opacity = 1;
+                ticketsContainer.style.transform = "translateY(0)";
+            }, 200);
 
-          if (validApps.length > 0) {
-            ticketsContainer.innerHTML = validApps
-              .map(
-                (app) => `
-                            <div class="ticket-card">
-                                <div class="ticket-header">
-                                    <div class="clinic-name">${app.clinic}</div>
-                                    <div class="status-badge">قيد الانتظار</div>
-                                </div>
-                                <div class="ticket-details">
-                                    <p><strong>المريض:</strong> ${app.clientName}</p>
-                                    <p><strong>التاريخ:</strong> ${app.date}</p>
-                                    <p><strong>الوقت:</strong> ${app.time}</p>
-                                    <p><strong>الهاتف:</strong> ${app.phone}</p>
-                                </div>
-                            </div>
-                        `
-              )
-              .join("");
-          } else {
+        })
+        .catch(err => {
+            console.error(err);
             ticketsContainer.innerHTML = `
-                            <div class="no-tickets">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48">
-                                    <path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-11h2v2h-2zm0 4h2v6h-2z"/>
-                                </svg>
-                                <p>لا توجد مواعيد صالحة</p>
-                            </div>
-                        `;
-          }
-
-          // Add fade-in animation
-          setTimeout(() => {
-            ticketsContainer.style.opacity = 1;
-            ticketsContainer.style.transform = "translateY(0)";
-          }, 200);
-        }, 500); // Simulated loading delay
-      });
-    </script>
+                <div class="no-tickets">
+                    <p>فشل في تحميل المواعيد</p>
+                </div>
+            `;
+        });
+});
+</script>
   </body>
 </html>

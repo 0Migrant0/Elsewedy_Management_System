@@ -26,7 +26,7 @@ require_once '../manegment_system/components/auth.php';
                     مريض</a>
                 <a href="dashboard.php"><i class="fas fa-calendar-alt"></i> الحجوزات</a>
                 <a href="../index.php"><i class="fas fa-calendar-check"></i> حجز موعد</a>
-                <a href="logout.php"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
+                <a href="../manegment_system/components/logout.php"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
             </div>
         </nav>
     </header>

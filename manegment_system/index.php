@@ -1,4 +1,5 @@
 <?php
+
 require_once 'components/auth.php';
 require_once 'components/db.php';
 
@@ -115,8 +116,35 @@ $patients = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <div>
                 <label for="medical_id_query">بحث بالرقم المرضي:</label>
                 <input type="text" id="medical_id_query" name="medical_id_query"
-                    value="<?= htmlspecialchars($medical_id_query) ?>" placeholder="الرقم المرضي">
+                    value="<?= htmlspecialchars($medical_id_query) ?>" 
+                    placeholder="الرقم المرضي"
+                    oninput="convertToEnglishDigits(this)"
+                    onpaste="handlePaste(event)">
             </div>
+
+            <script>
+                // تحويل الأرقام أثناء الكتابة
+                function convertToEnglishDigits(input) {
+                    const arabicDigits = /[\u0660-\u0669]/g; // أرقام عربية ٠١٢٣٤٥٦٧٨٩
+                    const persianDigits = /[\u06F0-\u06F9]/g; // أرقام فارسية ۰۱۲۳۴۵۶۷۸۹
+
+                    input.value = input.value
+                        .replace(arabicDigits, d => String.fromCharCode(d.charCodeAt(0) - 0x0630)) // ← عربي إلى إنجليزي
+                        .replace(persianDigits, d => String.fromCharCode(d.charCodeAt(0) - 0x06F0)); // ← فارسي إلى إنجليزي
+                }
+
+                // دعم اللصق (onpaste)
+                function handlePaste(event) {
+                    event.preventDefault();
+                    const pastedText = event.clipboardData.getData('text');
+
+                    const convertedText = pastedText
+                        .replace(/[\u0660-\u0669]/g, d => String.fromCharCode(d.charCodeAt(0) - 0x0630))
+                        .replace(/[\u06F0-\u06F9]/g, d => String.fromCharCode(d.charCodeAt(0) - 0x06F0));
+
+                    document.execCommand('insertText', false, convertedText);
+                }
+            </script>
             <div>
                 <label for="date_query">بحث بالتاريخ:</label>
                 <input type="date" id="date_query" name="date_query" value="<?= htmlspecialchars($date_query) ?>">
