@@ -32,17 +32,20 @@ if (!$patient) {
 }
 
 // معالجة النموذج عند الإرسال
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+
+    // تحديث البيانات
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'];
     $phone = $_POST['phone'] ?? '';
-    $clinic_name = $_POST['clinic_name'] ?? '';
+    $clinic_name = $_POST['clinic_name'] ?? ''; // ← الآن نأخذ الاسم
     $specialization = $_POST['specialization'] ?? '';
     $status = $_POST['status'] ?? '';
     $contract = $_POST['contract'] ?? '';
     $diagnosis = $_POST['diagnosis'] ?? '';
     $notes = $_POST['notes'] ?? '';
 
-    // تحديث البيانات
+    // تحديث البيانات باستخدام clinic_name
     $stmt = $pdo->prepare("
         UPDATE patients SET 
         name = :name,
@@ -58,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute([
         'name' => $name,
         'phone' => $phone,
-        'clinic_name' => $clinic_name,
+        'clinic_name' => $clinic_name, // ← نحفظ الاسم هنا
         'specialization' => $specialization,
         'status' => $status,
         'contract' => $contract,
@@ -67,11 +70,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'id' => $patient_id
     ]);
 
-    // إعادة التوجيه بعد التعديل
     $_SESSION['success_message'] = "تم تعديل بيانات المريض بنجاح.";
     header("Location: view_patient.php?id=" . $patient_id);
     exit;
 }
+    
+// جلب العيادات من قاعدة البيانات
+$stmt_clinics = $pdo->query("SELECT id, name FROM clinics ORDER BY name ASC");
+$clinics = $stmt_clinics->fetchAll(PDO::FETCH_ASSOC);
+
+// حالات محددة مسبقًا
+$status_options = ['كشف', 'مراجعة'];
+$specialization_options = [
+    'كسور',
+    'أطفال',
+    'مفاصل',
+    'طب رياضي',
+    'أطفال CP'
+];
 ?>
 <!DOCTYPE html>
 <html lang="ar">
@@ -94,6 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <p style="color: green;"><?= $_SESSION['success_message'] ?></p>
         <?php unset($_SESSION['success_message']); ?>
     <?php endif; ?>
+    
 
     <form method="POST" action="">
         <label for="name">الاسم:</label>
@@ -102,15 +119,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <label for="phone">رقم الهاتف:</label>
         <input type="tel" id="phone" name="phone" value="<?= htmlspecialchars($patient['phone']) ?>">
 
-        <label for="clinic_name">العيادة:</label>
-        <input type="text" id="clinic_name" name="clinic_name" value="<?= htmlspecialchars($patient['clinic_name'] ?? '') ?>">
+        <!-- العيادة -->
+<!-- العيادة -->
+<label for="clinic_name">العيادة:</label>
+<select id="clinic_name" name="clinic_name" required>
+    <option value="">اختر العيادة</option>
+    <?php foreach ($clinics as $clinic): ?>
+        <option value="<?= htmlspecialchars($clinic['name']) ?>"
+            <?= ($patient['clinic_name'] ?? '') == $clinic['name'] ? 'selected' : '' ?>>
+            <?= htmlspecialchars($clinic['name']) ?>
+        </option>
+    <?php endforeach; ?>
+</select>
 
-        <label for="specialization">التخصص الدقيق:</label>
-        <input type="text" id="specialization" name="specialization" value="<?= htmlspecialchars($patient['specialization'] ?? '') ?>">
+<!-- الحالة -->
+<label for="status">الحالة:</label>
+<select id="status" name="status" required>
+    <option value="">اختر الحالة</option>
+    <?php foreach ($status_options as $stat): ?>
+        <option value="<?= htmlspecialchars($stat) ?>"
+            <?= ($patient['status'] ?? '') == $stat ? 'selected' : '' ?>>
+            <?= htmlspecialchars($stat) ?>
+        </option>
+    <?php endforeach; ?>
+</select>
 
-        <label for="status">الحالة:</label>
-        <input type="text" id="status" name="status" value="<?= htmlspecialchars($patient['status']) ?>">
-
+<!-- التخصص الدقيق -->
+<label for="specialization">التخصص الدقيق:</label>
+<select id="specialization" name="specialization" required>
+    <option value="">اختر التخصص</option>
+    <?php foreach ($specialization_options as $spec): ?>
+        <option value="<?= htmlspecialchars($spec) ?>"
+            <?= ($patient['specialization'] ?? '') == $spec ? 'selected' : '' ?>>
+            <?= htmlspecialchars($spec) ?>
+        </option>
+    <?php endforeach; ?>
+</select>
         <label for="contract">التعاقد:</label>
         <input type="text" id="contract" name="contract" value="<?= htmlspecialchars($patient['contract'] ?? '') ?>">
 
