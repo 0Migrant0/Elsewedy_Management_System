@@ -8,14 +8,28 @@
   scroll-behavior: smooth;
 }
 
+html::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.54);
+  z-index: -1;
+}
+
 body {
   font-family: Arial, sans-serif;
   direction: rtl;
-  background-color: #fcfcfc;
   font-size: 62.5%;
-  background-image: url("../images/bg.jpg");
+  background-image: url("../images/logo.png");
   background-size: cover;
   background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+  backdrop-filter: blur(5px);
+  height: 100%;
 }
 
 .container {
@@ -59,9 +73,9 @@ textarea {
 }
 
 select {
-  appearance: none; /* Remove default styling */
-  -webkit-appearance: none; /* Safari support */
-  -moz-appearance: none; /* Firefox support */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
   background-color: #f0f0f0;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -138,8 +152,9 @@ nav {
   align-items: center;
   background-color: #ffffffa5;
   padding: 1rem;
-  border-radius: 0.4rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: static;
+  width: 100%;
 }
 
 nav > div {
@@ -175,7 +190,6 @@ nav .menu a:last-child {
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  background-color: #cccccc9d;
 }
 
 .patient-filter {
@@ -275,7 +289,7 @@ td {
   flex-direction: column;
   gap: 1rem;
   font-size: 1rem;
-  background-color: #ffffffae;
+  background-color: #ffffff75;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -608,7 +622,7 @@ td {
   position: relative;
   overflow: hidden;
   background: #f5891e;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   transition: all 0.3s ease-in-out;
 }
 
@@ -628,7 +642,7 @@ td {
 
 /* Box shadow on hover */
 .hover-shadow:hover {
-  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 /* Smooth transitions */
@@ -642,14 +656,14 @@ td {
 }
 
 .ripple-animation::after {
-  content: '';
+  content: "";
   display: block;
   position: absolute;
   top: 50%;
   left: 50%;
   width: 20px;
   height: 20px;
-  background: rgba(255,255,255,0.5);
+  background: rgba(255, 255, 255, 0.5);
   opacity: 0;
   border-radius: 50%;
   transform: translate(-50%, -50%) scale(0);

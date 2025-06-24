@@ -17,6 +17,7 @@ require_once 'manegment_system/components/db.php';
     <nav class="navbar">
         <ul class="nav-list">
             <li class="nav-item">
+                <img src="booking_system/images/logo2.png" alt="Logo" class="logo">
                 <a href="#" class="nav-link" id="about-doctor-btn">دكتور محمد أحمد فهمي السويدي</a>
             </li>
             <li class="nav-item">
@@ -31,14 +32,14 @@ require_once 'manegment_system/components/db.php';
             <span class="close-btn" id="close-popup">&times;</span>
             <h2 class="popup-title">دكتور محمد أحمد فهمي السويدي</h2>
             <!-- <img src="images/about_doctor.png" alt="Dr. Mohamed Ahmed Fawzy" class="doctor-image"> -->
-            <div class="popup-text">
-                <p>استشاري جراحة العظام وعظام الأطفال، يتميز دكتور محمد أحمد فهمي السويدي بخبرته الواسعة في مجال
-                    الجراحة.</p>
-                <p>حصل على بكالوريوس جراحة وطب وجراحة من جامعة الأزهر - أسيوط عام 2002.</p>
-                <p>حاصل على ماجستير جراحة العظام من جامعة عين شمس.</p>
-                <p>حاصل على دبلوم إدارة المستشفيات من أكاديمية السادات للعلوم الإدارية.</p>
-                <p>كما حصل على دبلوم متخصص في جراحة عظام الأطفال من المعهد القومي للحركة.</p>
-            </div>
+            <ul class="popup-text">
+                <li>استشاري جراحة العظام وعظام الأطفال، يتميز دكتور محمد أحمد فهمي السويدي بخبرته الواسعة في مجال
+                    الجراحة.</li>
+                <li>حصل على بكالوريوس طب وجراحة من جامعة الأزهر - أسيوط عام 2002.</li>
+                <li>حاصل على ماجستير جراحة العظام من جامعة عين شمس.</li>
+                <li>حاصل على دبلوم إدارة المستشفيات من أكاديمية السادات للعلوم الإدارية.</li>
+                <li>كما حصل على دبلوم متخصص في جراحة عظام الأطفال من المعهد القومي للحركة.</li>
+            </ul>
         </div>
     </div>
 
