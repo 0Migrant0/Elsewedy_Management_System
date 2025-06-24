@@ -170,7 +170,7 @@ $patients = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <th>التخصص الدقيق</th>
                     <th>التاريخ</th>
                     <th>عرض</th>
-                    <th>حذف</th>
+                    <!-- <th>حذف</th> -->
                 </tr>
             </thead>
             <tbody>
@@ -199,13 +199,14 @@ $patients = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <td data-label="تعديل">
                                 <a href="components/view_patient.php?id=<?= htmlspecialchars($patient['id']) ?>">عرض</a>
                             </td>
-                            <td data-label="حذف">
+                            <!-- زر الحذف -->
+                            <!-- <td data-label="حذف">
                                 <form method="POST" action="" onsubmit="return confirm('هل أنت متأكد أنك تريد حذف هذا المريض؟');">
                                     <button type="submit" name="delete_patient" value="<?= htmlspecialchars($patient['id']) ?>">
                                         <i class="fas fa-trash-alt"></i> حذف
                                     </button>
                                 </form>
-                            </td>
+                            </td> -->
                         </tr>
                     <?php endforeach; ?>
                 <?php else: ?>
