@@ -251,6 +251,8 @@ nav .menu a:last-child {
   margin-bottom: 15px;
   text-align: center;
   color: #333;
+  font-family: 'Tajawal', 'Cairo', 'Amiri', Arial, sans-serif; 
+
 }
 
 .doctor-image {
@@ -270,9 +272,14 @@ nav .menu a:last-child {
   text-align: justify;
   margin-top: 20px;
   line-height: 1.8;
-  opacity: 0; /* Start with the text hidden */
-  transform: translateX(50px); /* Move the text to the right initially */
-  animation: slideInText 1.5s ease forwards; /* Apply the animation */
+  opacity: 0; 
+  transform: translateX(50px); 
+  animation: slideInText 1.5s ease forwards; 
+  font-family: 'Tajawal', 'Cairo', 'Amiri', Arial, sans-serif; 
+}
+
+.popup-text li {
+  font-family: inherit;
 }
 
 .popup-text p {

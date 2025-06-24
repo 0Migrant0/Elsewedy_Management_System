@@ -9,6 +9,7 @@ require_once 'manegment_system/components/db.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نظام حجز المواعيد</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="booking_system/styles/styles.css">
 </head>
 
@@ -167,7 +168,7 @@ require_once 'manegment_system/components/db.php';
             if (clinicId) {
                 const xhr = new XMLHttpRequest();
                 xhr.open("GET", `booking_system/components/available_days.php?clinic_id=${clinicId}`, true);
-                xhr.onload = function () {
+                xhr.onload = function() {
                     if (this.status == 200) {
 
                         const days = JSON.parse(this.responseText);
@@ -185,7 +186,7 @@ require_once 'manegment_system/components/db.php';
                         console.error(`Failed to fetch available days. Status: ${this.status}`);
                     }
                 };
-                xhr.onerror = function () {
+                xhr.onerror = function() {
                     console.error('Request error...');
                 };
                 xhr.send();
@@ -240,7 +241,7 @@ require_once 'manegment_system/components/db.php';
             if (dayOfWeek && clinicId && selectedDate) {
                 const xhr = new XMLHttpRequest();
                 xhr.open("GET", `booking_system/components/available_slots.php?day_of_week=${dayOfWeek}&clinic_id=${clinicId}&selected_date=${selectedDate}`, true);
-                xhr.onload = function () {
+                xhr.onload = function() {
                     if (this.status == 200) {
                         document.getElementById('time_slot').innerHTML = this.responseText;
                     }
@@ -255,7 +256,7 @@ require_once 'manegment_system/components/db.php';
         }
 
         // Add event listener to the form submission
-        document.querySelector('.form-con').addEventListener('submit', function (event) {
+        document.querySelector('.form-con').addEventListener('submit', function(event) {
             const phoneNumberInput = document.getElementById('phone_number');
             const phoneNumber = phoneNumberInput.value;
 
