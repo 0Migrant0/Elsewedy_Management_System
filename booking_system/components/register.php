@@ -1,4 +1,4 @@
-<!-- <?php
+<?php
 // require_once '../../manegment_system/components/db.php';
 
 // $message = ''; // متغير لتخزين الرسائل
@@ -32,7 +32,7 @@
 // }
 // $pdo = null;
 ?>
-
+<!--  
 <!DOCTYPE html>
 <html lang="ar">
 <head>
