@@ -8,17 +8,28 @@
   scroll-behavior: smooth;
 }
 
-html {
-  background-color: #bed7eb;
-  background-image: url("../images/bg.jpg");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
+html::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
   height: 100%;
+  background-color: rgba(255, 255, 255, 0.54);
+  z-index: -1;
 }
 
 body {
+  font-family: Arial, sans-serif;
   direction: rtl;
+  font-size: 62.5%;
+  background-image: url("../images/logo.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+  backdrop-filter: blur(5px);
+  height: 100%;
 }
 
 a {
@@ -53,10 +64,12 @@ nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #ffffffa5;
+  background-color: #ffffff69;
   padding: 1rem;
   border-radius: 0.4rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: static;
+  width: 100%;
 }
 
 nav > div {
@@ -153,10 +166,22 @@ nav .menu a:last-child {
   list-style: none;
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 
 .nav-item {
   margin: 0 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.nav-item img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
 }
 
 .nav-link {
@@ -226,6 +251,8 @@ nav .menu a:last-child {
   margin-bottom: 15px;
   text-align: center;
   color: #333;
+  font-family: 'Tajawal', 'Cairo', 'Amiri', Arial, sans-serif; 
+
 }
 
 .doctor-image {
@@ -245,9 +272,14 @@ nav .menu a:last-child {
   text-align: justify;
   margin-top: 20px;
   line-height: 1.8;
-  opacity: 0; /* Start with the text hidden */
-  transform: translateX(50px); /* Move the text to the right initially */
-  animation: slideInText 1.5s ease forwards; /* Apply the animation */
+  opacity: 0; 
+  transform: translateX(50px); 
+  animation: slideInText 1.5s ease forwards; 
+  font-family: 'Tajawal', 'Cairo', 'Amiri', Arial, sans-serif; 
+}
+
+.popup-text li {
+  font-family: inherit;
 }
 
 .popup-text p {
@@ -290,6 +322,7 @@ nav .menu a:last-child {
   display: grid;
   grid-template-columns: 1.5fr 1fr;
   gap: 1rem;
+  padding-bottom: 1rem;
 }
 .book-container {
   display: flex;

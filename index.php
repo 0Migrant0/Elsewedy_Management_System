@@ -9,6 +9,7 @@ require_once 'manegment_system/components/db.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نظام حجز المواعيد</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="booking_system/styles/styles.css">
 </head>
 
@@ -17,6 +18,7 @@ require_once 'manegment_system/components/db.php';
     <nav class="navbar">
         <ul class="nav-list">
             <li class="nav-item">
+                <img src="booking_system/images/logo2.png" alt="Logo" class="logo">
                 <a href="#" class="nav-link" id="about-doctor-btn">دكتور محمد أحمد فهمي السويدي</a>
             </li>
             <li class="nav-item">
@@ -31,14 +33,14 @@ require_once 'manegment_system/components/db.php';
             <span class="close-btn" id="close-popup">&times;</span>
             <h2 class="popup-title">دكتور محمد أحمد فهمي السويدي</h2>
             <!-- <img src="images/about_doctor.png" alt="Dr. Mohamed Ahmed Fawzy" class="doctor-image"> -->
-            <div class="popup-text">
-                <p>استشاري جراحة العظام وعظام الأطفال، يتميز دكتور محمد أحمد فهمي السويدي بخبرته الواسعة في مجال
-                    الجراحة.</p>
-                <p>حصل على بكالوريوس جراحة وطب وجراحة من جامعة الأزهر - أسيوط عام 2002.</p>
-                <p>حاصل على ماجستير جراحة العظام من جامعة عين شمس.</p>
-                <p>حاصل على دبلوم إدارة المستشفيات من أكاديمية السادات للعلوم الإدارية.</p>
-                <p>كما حصل على دبلوم متخصص في جراحة عظام الأطفال من المعهد القومي للحركة.</p>
-            </div>
+            <ul class="popup-text">
+                <li>استشاري جراحة العظام وعظام الأطفال، يتميز دكتور محمد أحمد فهمي السويدي بخبرته الواسعة في مجال
+                    الجراحة.</li>
+                <li>حصل على بكالوريوس طب وجراحة من جامعة الأزهر - أسيوط عام 2002.</li>
+                <li>حاصل على ماجستير جراحة العظام من جامعة عين شمس.</li>
+                <li>حاصل على دبلوم إدارة المستشفيات من أكاديمية السادات للعلوم الإدارية.</li>
+                <li>كما حصل على دبلوم متخصص في جراحة عظام الأطفال من المعهد القومي للحركة.</li>
+            </ul>
         </div>
     </div>
 
@@ -166,7 +168,7 @@ require_once 'manegment_system/components/db.php';
             if (clinicId) {
                 const xhr = new XMLHttpRequest();
                 xhr.open("GET", `booking_system/components/available_days.php?clinic_id=${clinicId}`, true);
-                xhr.onload = function () {
+                xhr.onload = function() {
                     if (this.status == 200) {
 
                         const days = JSON.parse(this.responseText);
@@ -184,7 +186,7 @@ require_once 'manegment_system/components/db.php';
                         console.error(`Failed to fetch available days. Status: ${this.status}`);
                     }
                 };
-                xhr.onerror = function () {
+                xhr.onerror = function() {
                     console.error('Request error...');
                 };
                 xhr.send();
@@ -239,7 +241,7 @@ require_once 'manegment_system/components/db.php';
             if (dayOfWeek && clinicId && selectedDate) {
                 const xhr = new XMLHttpRequest();
                 xhr.open("GET", `booking_system/components/available_slots.php?day_of_week=${dayOfWeek}&clinic_id=${clinicId}&selected_date=${selectedDate}`, true);
-                xhr.onload = function () {
+                xhr.onload = function() {
                     if (this.status == 200) {
                         document.getElementById('time_slot').innerHTML = this.responseText;
                     }
@@ -254,7 +256,7 @@ require_once 'manegment_system/components/db.php';
         }
 
         // Add event listener to the form submission
-        document.querySelector('.form-con').addEventListener('submit', function (event) {
+        document.querySelector('.form-con').addEventListener('submit', function(event) {
             const phoneNumberInput = document.getElementById('phone_number');
             const phoneNumber = phoneNumberInput.value;
 
