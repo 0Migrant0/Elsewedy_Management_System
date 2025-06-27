@@ -1,38 +1,38 @@
 <?php
-require_once '../../manegment_system/components/db.php';
+// require_once '../../manegment_system/components/db.php';
 
-$message = ''; // متغير لتخزين الرسائل
+// $message = ''; // متغير لتخزين الرسائل
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    $confirm_password = $_POST['confirm_password']; // كلمة المرور للتأكيد
+// if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+//     $email = $_POST['email'];
+//     $password = $_POST['password'];
+//     $confirm_password = $_POST['confirm_password']; // كلمة المرور للتأكيد
 
-    // التحقق من تطابق كلمتي المرور
-    if ($password !== $confirm_password) {
-        $message = "كلمتا المرور غير متطابقتين";
-    } elseif (strlen($password) < 8) { // التحقق من طول كلمة المرور
-        $message = "يجب أن تكون كلمة المرور لا تقل عن 8 خانات";
-    } else {
-        $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+//     // التحقق من تطابق كلمتي المرور
+//     if ($password !== $confirm_password) {
+//         $message = "كلمتا المرور غير متطابقتين";
+//     } elseif (strlen($password) < 8) { // التحقق من طول كلمة المرور
+//         $message = "يجب أن تكون كلمة المرور لا تقل عن 8 خانات";
+//     } else {
+//         $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
-        $sql = "INSERT INTO users (email, password) VALUES (?, ?)";
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindValue(1, $email);
-        $stmt->bindValue(2, $hashed_password);
+//         $sql = "INSERT INTO users (email, password) VALUES (?, ?)";
+//         $stmt = $pdo->prepare($sql);
+//         $stmt->bindValue(1, $email);
+//         $stmt->bindValue(2, $hashed_password);
 
-        if ($stmt->execute()) {
-            $message = "تم التسجيل بنجاح";
-        } else {
-            $message = "حدث خطأ: " . $stmt->errorInfo()[2];
-        }
+//         if ($stmt->execute()) {
+//             $message = "تم التسجيل بنجاح";
+//         } else {
+//             $message = "حدث خطأ: " . $stmt->errorInfo()[2];
+//         }
 
-        $stmt = null;
-    }
-}
-$pdo = null;
+//         $stmt = null;
+//     }
+// }
+// $pdo = null;
 ?>
-
+<!--  
 <!DOCTYPE html>
 <html lang="ar">
 <head>
@@ -121,4 +121,4 @@ $pdo = null;
         </form>
     </div>
 </body>
-</html>
+</html> -->
