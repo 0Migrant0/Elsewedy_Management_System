@@ -8,7 +8,61 @@ require_once 'manegment_system/components/db.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام حجز المواعيد</title>
+    <title>دكتور محمد أحمد فهمي السويدي - استشاري جراحة العظام وعظام الأطفال</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="دكتور محمد أحمد فهمي السويدي - استشاري جراحة العظام وعظام الأطفال. احجز موعدك الآن في عياداتنا المتخصصة في جراحة العظام والمفاصل. خبرة واسعة منذ 2002">
+    <meta name="keywords" content="دكتور عظام, جراحة العظام, عظام الأطفال, استشاري عظام, حجز موعد طبيب, عيادة عظام, محمد السويدي, جراحة المفاصل, طبيب عظام">
+    <meta name="author" content="دكتور محمد أحمد فهمي السويدي">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://drmohamedfahmyelsewedy.com/">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="booking_system/images/logo2.png">
+    <link rel="shortcut icon" type="image/png" href="booking_system/images/logo2.png">
+    
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="دكتور محمد أحمد فهمي السويدي - استشاري جراحة العظام">
+    <meta property="og:description" content="احجز موعدك مع استشاري جراحة العظام وعظام الأطفال. خبرة واسعة في جراحة العظام والمفاصل منذ 2002">
+    <meta property="og:image" content="https://drmohamedfahmyelsewedy.com/booking_system/images/logo2.png">
+    <meta property="og:url" content="https://drmohamedfahmyelsewedy.com/">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="ar_EG">
+    
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="دكتور محمد أحمد فهمي السويدي - استشاري جراحة العظام">
+    <meta name="twitter:description" content="احجز موعدك مع استشاري جراحة العظام وعظام الأطفال">
+    <meta name="twitter:image" content="https://drmohamedfahmyelsewedy.com/booking_system/images/logo2.png">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "MedicalOrganization",
+      "name": "دكتور محمد أحمد فهمي السويدي",
+      "description": "استشاري جراحة العظام وعظام الأطفال",
+      "url": "https://drmohamedfahmyelsewedy.com",
+       "logo": "https://drmohamedfahmyelsewedy.com/booking_system/images/logo2.png",
+       "image": "https://drmohamedfahmyelsewedy.com/booking_system/images/logo2.png",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "EG"
+      },
+      "medicalSpecialty": "Orthopedic Surgery",
+      "availableService": [
+        {
+          "@type": "MedicalProcedure",
+          "name": "جراحة العظام"
+        },
+        {
+          "@type": "MedicalProcedure", 
+          "name": "جراحة عظام الأطفال"
+        }
+      ]
+    }
+    </script>
+    
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="booking_system/styles/styles.css">
 </head>
@@ -40,6 +94,12 @@ require_once 'manegment_system/components/db.php';
                 <li>حاصل على ماجستير جراحة العظام من جامعة عين شمس.</li>
                 <li>حاصل على دبلوم إدارة المستشفيات من أكاديمية السادات للعلوم الإدارية.</li>
                 <li>كما حصل على دبلوم متخصص في جراحة عظام الأطفال من المعهد القومي للحركة.</li>
+                <li style="margin-top: 1.5rem; text-align: center; list-style: none;">
+                  <a href="https://www.facebook.com/profile.php?id=61560810636467&mibextid=wwXIfr" target="_blank" style="display: inline-flex; align-items: center; gap: 0.5rem; background: #1877f2; color: #fff; padding: 0.7rem 1.5rem; border-radius: 2rem; font-size: 1.1rem; font-weight: 600; text-decoration: none; box-shadow: 0 2px 8px #1877f233; transition: background 0.2s;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#fff" style="vertical-align: middle;"><path d="M22.675 0h-21.35C.595 0 0 .592 0 1.326v21.348C0 23.408.595 24 1.325 24h11.495v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.797.143v3.24l-1.918.001c-1.504 0-1.797.715-1.797 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116C23.406 24 24 23.408 24 22.674V1.326C24 .592 23.406 0 22.675 0"/></svg>
+                    صفحتنا على فيسبوك
+                  </a>
+                </li>
             </ul>
         </div>
     </div>

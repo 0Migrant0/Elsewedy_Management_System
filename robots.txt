@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /manegment_system/components/
+Disallow: /booking_system/components/
+Disallow: /composer/
+Disallow: /manegment_system/uploads/
+
+Sitemap: https://drmohamedfahmyelsewedy.com/sitemap.xml

@@ -274,6 +274,7 @@ nav .menu a:last-child {
   font-size: 1.2rem;
   text-align: justify;
   margin-top: 20px;
+  padding: 1rem;
   line-height: 1.8;
   opacity: 0;
   transform: translateX(50px);
@@ -822,6 +823,11 @@ th {
   .book-container {
     width: 90%;
     margin-top: 1rem;
+  }
+
+  .close-btn{
+    top: 5px;
+    right: 10px;
   }
 }
 
