@@ -72,13 +72,13 @@ nav {
   width: 100%;
 }
 
-nav > div {
+nav>div {
   display: flex;
   gap: 2rem;
 }
 
-nav > a,
-nav > div > a {
+nav>a,
+nav>div>a {
   font-size: 1.5rem;
   font-weight: 500;
 }
@@ -114,23 +114,23 @@ nav .menu a:last-child {
   gap: 1rem;
 }
 
-.login-container > h2 {
+.login-container>h2 {
   font-size: 2rem;
 }
 
-.login-container > form {
+.login-container>form {
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
 }
 
-.login-container > form > label {
+.login-container>form>label {
   font-size: 1rem;
   color: #000000d2;
   margin-right: 0.5rem;
 }
 
-.login-container > form > input {
+.login-container>form>input {
   border: 1px solid #000000a4;
   padding: 8px 12px;
   outline: none;
@@ -138,12 +138,12 @@ nav .menu a:last-child {
   transition: border-color 0.3s ease;
 }
 
-.login-container > form > input:focus {
+.login-container>form>input:focus {
   border-color: #008e98;
   animation: pulse 1s infinite alternate;
 }
 
-.login-container > form > button {
+.login-container>form>button {
   font-size: 1rem;
   font-weight: 600;
   padding: 1rem 2rem;
@@ -156,7 +156,7 @@ nav .menu a:last-child {
   animation: pulse 1s infinite alternate;
 }
 
-.login-container > form > button:hover {
+.login-container>form>button:hover {
   background-color: #9fc5e5;
   scale: 1.05;
 }
@@ -195,9 +195,11 @@ nav .menu a:last-child {
 .nav-link:hover {
   color: #008e98;
 }
+
 /* Popup Styling */
 .popup-container {
-  display: none; /* Hidden by default */
+  display: none;
+  /* Hidden by default */
   position: fixed;
   top: 0;
   left: 0;
@@ -225,6 +227,7 @@ nav .menu a:last-child {
     opacity: 0;
     transform: scale(0.7);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -251,7 +254,7 @@ nav .menu a:last-child {
   margin-bottom: 15px;
   text-align: center;
   color: #333;
-  font-family: 'Tajawal', 'Cairo', 'Amiri', Arial, sans-serif; 
+  font-family: 'Tajawal', 'Cairo', 'Amiri', Arial, sans-serif;
 
 }
 
@@ -272,10 +275,10 @@ nav .menu a:last-child {
   text-align: justify;
   margin-top: 20px;
   line-height: 1.8;
-  opacity: 0; 
-  transform: translateX(50px); 
-  animation: slideInText 1.5s ease forwards; 
-  font-family: 'Tajawal', 'Cairo', 'Amiri', Arial, sans-serif; 
+  opacity: 0;
+  transform: translateX(50px);
+  animation: slideInText 1.5s ease forwards;
+  font-family: 'Tajawal', 'Cairo', 'Amiri', Arial, sans-serif;
 }
 
 .popup-text li {
@@ -304,14 +307,20 @@ nav .menu a:last-child {
     font-size: 14px;
   }
 }
+
 @keyframes slideInText {
   from {
-    opacity: 0; /* Start transparent and off-screen */
-    transform: translateX(50px); /* Start position (off-screen to the right) */
+    opacity: 0;
+    /* Start transparent and off-screen */
+    transform: translateX(50px);
+    /* Start position (off-screen to the right) */
   }
+
   to {
-    opacity: 1; /* End fully visible */
-    transform: translateX(0); /* End position (in place) */
+    opacity: 1;
+    /* End fully visible */
+    transform: translateX(0);
+    /* End position (in place) */
   }
 }
 
@@ -324,6 +333,7 @@ nav .menu a:last-child {
   gap: 1rem;
   padding-bottom: 1rem;
 }
+
 .book-container {
   display: flex;
   flex-direction: column;
@@ -348,7 +358,7 @@ nav .menu a:last-child {
   font-size: 2rem;
 }
 
-.form-con > label {
+.form-con>label {
   font-weight: 600;
   text-align: right;
   font-size: 1.5rem;
@@ -409,7 +419,7 @@ nav .menu a:last-child {
   border-bottom-right-radius: 0.8rem;
 }
 
-.date-plan > div {
+.date-plan>div {
   padding: 1rem;
   margin: 0 0.1rem;
   margin-top: 1rem;
@@ -418,15 +428,16 @@ nav .menu a:last-child {
   width: 95%;
 }
 
-.date-plan > div > p {
+.date-plan>div>p {
   padding-right: 0.5rem;
   margin-top: 0.5rem;
   font-size: 1.1rem;
 }
 
-.date-plan > div > p > span {
+.date-plan>div>p>span {
   font-weight: 600;
 }
+
 /* End Booking styles */
 /* ****************** */
 /* Beghin dashboard styles */
@@ -441,7 +452,7 @@ nav .menu a:last-child {
   overflow-x: scroll;
 }
 
-.dashboard-container > h1 {
+.dashboard-container>h1 {
   margin-top: 1rem;
 }
 
@@ -469,6 +480,7 @@ nav .menu a:last-child {
   text-decoration: none;
   color: #ffffff;
 }
+
 .add-clinic-button:hover {
   color: #000000;
 }
@@ -541,12 +553,14 @@ th {
   margin: 0.5rem;
   display: inline-block;
   transition: all 0.3s;
-  background-color: #007bff; /* Blue color */
+  background-color: #007bff;
+  /* Blue color */
 }
 
 .btn-edit:hover {
   scale: 1.1;
-  background-color: #0056b3; /* Darker blue on hover */
+  background-color: #0056b3;
+  /* Darker blue on hover */
 }
 
 .btn-delete {
@@ -559,12 +573,14 @@ th {
   margin: 0.5rem;
   display: inline-block;
   transition: all 0.3s;
-  background-color: #dc3545; /* Red color */
+  background-color: #dc3545;
+  /* Red color */
 }
 
 .btn-delete:hover {
   scale: 1.1;
-  background-color: #a71d2a; /* Darker red on hover */
+  background-color: #a71d2a;
+  /* Darker red on hover */
 }
 
 .btn-save {
@@ -577,12 +593,14 @@ th {
   margin: 0.5rem;
   display: inline-block;
   transition: all 0.3s;
-  background-color: #28a745; /* Green color */
+  background-color: #28a745;
+  /* Green color */
 }
 
 .btn-save:hover {
   scale: 1.1;
-  background-color: #1e7e34; /* Darker green on hover */
+  background-color: #1e7e34;
+  /* Darker green on hover */
 }
 
 /* END dashboard styles */
@@ -604,9 +622,10 @@ th {
 }
 
 .add-clinic-container {
-  width: 20rem;
+  width: 100%;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 2rem 1rem;
   margin-top: 1rem;
   background-color: #ffffff9e;
   border-radius: 0.4rem;
@@ -618,64 +637,70 @@ th {
   justify-content: space-between;
 }
 
-.add-clinic-container > form {
+.add-clinic-container>form {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 1rem;
 }
 
-.work-days-checkbox {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-template-rows: repeat(3, 1fr);
-  text-align: left;
+.add-clinic-container form input,
+.add-clinic-container form select {
+  width: 100%;
+  font-size: 1.2rem;
+  padding: 0.8rem 1rem;
+  border-radius: 0.3rem;
+  border: 1px solid #000000a4;
+  margin-bottom: 0.5rem;
+  box-sizing: border-box;
 }
 
-.work-days-checkbox > div > label {
-  margin-left: 0.2rem;
+.add-clinic-container label {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  text-align: right;
 }
 
-.work-days-checkbox > div > input {
-  margin-left: 0.2rem;
-}
-
-.edit-work-days {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-template-rows: repeat(3, 1fr);
-  text-align: left;
-  gap: 0.1rem;
-}
-
-.edit-work-days label {
-  display: flex;
-  align-items: center;
-  font-size: 1rem;
-  cursor: pointer;
-}
-
-.edit-work-days input[type="checkbox"] {
-  width: 1rem;
-  height: 1rem;
+.add-clinic-container-title {
+  font-size: 3rem;
+  text-align: center;
+  margin-bottom: 1rem;
+  color: #000000d2;
+  font-family: 'Tajawal', 'Cairo', 'Amiri', Arial, sans-serif;
 }
 
 .add-clinic-btn {
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 600;
   padding: 1rem 2rem;
-  margin-top: 2rem;
+  margin-top: 1.5rem;
   background-color: #bed7eb;
   color: #000000;
   border: none;
   border-radius: 0.4rem;
   transition: all 0.3s;
   animation: pulse 1s infinite alternate;
+  width: 100%;
 }
 
-.add-clinic-btn:hover {
-  scale: 1.02;
-  background-color: #9fc5e5;
+@media (max-width: 600px) {
+  .add-clinic-container {
+    width: 100%;
+    padding: 1rem 0.5rem;
+  }
+
+  .add-clinic-btn {
+    font-size: 1rem;
+    padding: 0.8rem 1rem;
+  }
+
+  .add-clinic-container input,
+  .add-clinic-container select {
+    font-size: 1rem;
+    padding: 0.6rem 0.8rem;
+  }
 }
+
 /* Responsive grid */
 @media (max-width: 900px) {
   .manage-clinic-container {
@@ -694,6 +719,7 @@ th {
     grid-template-columns: 1fr;
   }
 }
+
 /* END Add Clinic styles */
 /* ****************** */
 /* Responsive */
@@ -704,6 +730,7 @@ th {
 }
 
 @media (max-width: 1100px) {
+
   table,
   thead,
   tbody,
@@ -785,22 +812,79 @@ th {
     width: 70%;
     margin-top: 1rem;
   }
+
   .add-clinic-container {
     width: 90%;
   }
 }
+
 @media (max-width: 450px) {
   .book-container {
     width: 90%;
     margin-top: 1rem;
   }
 }
+
 /* Animations */
 @keyframes pulse {
   0% {
     box-shadow: 0 0 4px rgba(0, 142, 152, 0.5);
   }
+
   100% {
     box-shadow: 0 0 8px rgba(0, 142, 152, 0.8);
+  }
+}
+
+.work-days-checkbox {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem 0.5rem;
+  background: #f7fafc;
+  padding: 1rem;
+  border-radius: 0.4rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 4px #00000014;
+}
+
+.work-days-checkbox > div {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.2rem;
+  border-radius: 0.2rem;
+  transition: background 0.2s;
+}
+
+.work-days-checkbox > div:hover {
+  background: #e6f7ff;
+}
+
+.work-days-checkbox label {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+}
+
+.work-days-checkbox input[type="checkbox"] {
+  width: 1.2rem;
+  height: 1.2rem;
+  accent-color: #008e98;
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  .work-days-checkbox {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.7rem 0.3rem;
+    padding: 0.7rem;
+  }
+  .work-days-checkbox label {
+    font-size: 0.95rem;
+  }
+  .work-days-checkbox input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
   }
 }
